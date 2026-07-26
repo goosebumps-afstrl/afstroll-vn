@@ -22,6 +22,28 @@ async function loadHTMLPart(path, containerId) {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
         document.getElementById(containerId).innerHTML = html;
+        
+        // Inisialisasi HLS.js untuk elemen video m3u8 yang baru dimuat
+        const videos = document.getElementById(containerId).querySelectorAll("video");
+        videos.forEach(video => {
+            const source = video.querySelector("source");
+            if (source && source.src.includes(".m3u8")) {
+                if (window.Hls && Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(source.src);
+                    hls.attachMedia(video);
+                    // Handle autoplay issues
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        if (video.hasAttribute('autoplay')) {
+                            video.play().catch(e => console.log("Autoplay prevented:", e));
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Fallback untuk Safari yang support m3u8 secara bawaan
+                    video.src = source.src;
+                }
+            }
+        });
     } catch (e) {
         console.error(`Gagal memuat ${path}:`, e);
     }

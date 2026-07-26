@@ -34,7 +34,7 @@ export const logic = {
 
   getStorySequence1() {
     return [
-      { type: "video", src: "assets/videos/party_intro.mp4", skippable: false },
+      { type: "video", src: "assets/videos/party_intro.m3u8", skippable: false },
       {
         type: "image",
         src: "assets/images/0001_party_intro01.jpg",
@@ -637,14 +637,21 @@ export const logic = {
 
       if (stepData.type === "video") {
         newMediaEl = document.createElement("video");
-        newMediaEl.src = stepData.src;
         newMediaEl.autoplay = true;
         newMediaEl.muted = true;
         newMediaEl.playsInline = true;
         newMediaEl.className =
           "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0 z-10";
+          
+        if (stepData.src.includes(".m3u8") && window.Hls && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(stepData.src);
+          hls.attachMedia(newMediaEl);
+        } else {
+          newMediaEl.src = stepData.src;
+        }
         newMediaEl.onended = () => this.nextStoryStep();
-        if (stepData.src === "assets/videos/party_intro.mp4") {
+        if (stepData.src === "assets/videos/party_intro.m3u8") {
           this.playIntroNarration();
         }
       } else if (
