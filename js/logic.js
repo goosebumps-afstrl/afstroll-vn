@@ -679,19 +679,19 @@ export const logic = {
 
           if (stepData.effect === "wake-up") {
             newMediaEl.classList.remove("opacity-0");
-            newMediaEl.classList.add("animate-wake-up");
+            newMediaEl.classList.add("opacity-100", "animate-wake-up");
           } else if (stepData.effect === "blur-shake") {
             newMediaEl.classList.remove("opacity-0");
-            newMediaEl.classList.add("animate-blur-shake");
+            newMediaEl.classList.add("opacity-100", "animate-blur-shake");
           } else if (stepData.effect === "blur-pulse-1") {
             newMediaEl.classList.remove("opacity-0");
-            newMediaEl.classList.add("animate-blur-pulse-1");
+            newMediaEl.classList.add("opacity-100", "animate-blur-pulse-1");
           } else if (stepData.effect === "blur-pulse-2") {
             newMediaEl.classList.remove("opacity-0");
-            newMediaEl.classList.add("animate-blur-pulse-2");
+            newMediaEl.classList.add("opacity-100", "animate-blur-pulse-2");
           } else if (stepData.effect === "blur-oscillate") {
             newMediaEl.classList.remove("opacity-0");
-            newMediaEl.classList.add("animate-blur-oscillate");
+            newMediaEl.classList.add("opacity-100", "animate-blur-oscillate");
           } else {
             newMediaEl.classList.remove("opacity-0");
             newMediaEl.classList.add("opacity-100");
