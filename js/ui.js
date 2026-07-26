@@ -95,28 +95,28 @@ export const ui = {
     if (!GAME.audio.bgm || !GAME.audio.intro) return;
 
     if (sceneId === "scene-intro") {
-      GAME.audio.fadeOutAndPause(GAME.audio.intro);
+      GAME.audio.intro.pause();
       GAME.audio.fadeInAndPlay(GAME.audio.bgm);
     } else if (sceneId === "scene-story") {
-      GAME.audio.fadeOutAndPause(GAME.audio.bgm);
+      GAME.audio.bgm.pause();
       if (GAME.state.storyPhase === 1) {
         GAME.audio.fadeInAndPlay(GAME.audio.intro);
       } else {
-        GAME.audio.fadeOutAndPause(GAME.audio.intro);
+        GAME.audio.intro.pause();
       }
     } else if (sceneId === "scene-maingame") {
       if (GAME.state.storyPhase === 2) {
-        GAME.audio.fadeOutAndPause(GAME.audio.bgm);
-        GAME.audio.fadeOutAndPause(GAME.audio.intro);
+        GAME.audio.bgm.pause();
+        GAME.audio.intro.pause();
       } else {
-        GAME.audio.fadeOutAndPause(GAME.audio.intro);
+        GAME.audio.intro.pause();
         GAME.audio.fadeInAndPlay(GAME.audio.bgm);
       }
     } else if (sceneId === "scene-gameover") {
-      GAME.audio.fadeOutAndPause(GAME.audio.bgm);
-      GAME.audio.fadeOutAndPause(GAME.audio.intro);
+      GAME.audio.bgm.pause();
+      GAME.audio.intro.pause();
     } else if (oldSceneId === "scene-gameover") {
-      GAME.audio.fadeOutAndPause(GAME.audio.intro);
+      GAME.audio.intro.pause();
       GAME.audio.fadeInAndPlay(GAME.audio.bgm);
     }
   },
@@ -137,14 +137,20 @@ export const ui = {
       const anyModalOpen =
         !document.getElementById("modal-phone").classList.contains("hidden") ||
         !document.getElementById("modal-option").classList.contains("hidden") ||
-        !document
-          .getElementById("modal-confirm-overwrite")
-          .classList.contains("hidden");
+        !document.getElementById("modal-saveload").classList.contains("hidden") ||
+        !document.getElementById("modal-confirm-overwrite").classList.contains("hidden");
 
       if (anyModalOpen) {
-        doorExit.style.display = "none";
+        doorExit.classList.add("opacity-0");
+        setTimeout(() => doorExit.classList.add("hidden"), 300);
       } else {
-        doorExit.style.display = "";
+        if (GAME.state.currentView === "view-apartment") {
+          const wrapper = document.getElementById("view-apartment");
+          if (wrapper && wrapper.classList.contains("minimized")) {
+            doorExit.classList.remove("hidden");
+            setTimeout(() => doorExit.classList.remove("opacity-0"), 10);
+          }
+        }
       }
     }
   },
@@ -475,7 +481,9 @@ export const ui = {
     const data = GAME.state.stockPrices[stockId].history || [];
     if (data.length < 2) return;
 
-    const isUp = data[data.length - 1] >= data[0];
+    const isUp = data.length >= 2 
+      ? data[data.length - 1] >= data[data.length - 2]
+      : data[data.length - 1] >= data[0];
     const lineColor = isUp ? "#4ade80" : "#f87171";
     const gradientStartColor = isUp
       ? "rgba(74, 222, 128, 0.5)"

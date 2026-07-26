@@ -568,6 +568,7 @@ export const logic = {
       if (typeof this.storyState.onComplete === "function") {
         this.storyState.onComplete();
       }
+      this.storyState.sequence = null;
       return;
     }
 
@@ -3012,18 +3013,18 @@ export const logic = {
 
   closeSahamApp() {
     if (GAME.state.previousView) {
-      GAME.ui.changeView(GAME.state.previousView);
+      GAME.ui.changeView(GAME.state.previousView, false);
       GAME.ui.toggleModal("modal-phone");
       GAME.state.previousView = null;
     } else {
-      GAME.ui.changeView("view-apartment");
+      GAME.ui.changeView("view-apartment", false);
     }
   },
 
   openSahamDetail(id) {
     GAME.state.activeStockId = id;
     document.getElementById("saham-amount").value = 1;
-    GAME.ui.changeView("view-saham-detail");
+    GAME.ui.changeView("view-saham-detail", false);
     GAME.ui.renderSahamDetail();
   },
 
@@ -3109,16 +3110,16 @@ export const logic = {
       GAME.state.previousView = activeDynamicView.id;
     }
     GAME.ui.toggleModal("modal-phone");
-    GAME.ui.changeView("view-message");
+    GAME.ui.changeView("view-message", false);
   },
 
   closeMessageApp() {
     if (GAME.state.previousView) {
-      GAME.ui.changeView(GAME.state.previousView);
+      GAME.ui.changeView(GAME.state.previousView, false);
       GAME.ui.toggleModal("modal-phone");
       GAME.state.previousView = null;
     } else {
-      GAME.ui.changeView("view-apartment");
+      GAME.ui.changeView("view-apartment", false);
     }
   },
 
@@ -3130,7 +3131,7 @@ export const logic = {
       GAME.state.previousView = activeDynamicView.id;
     }
     GAME.ui.toggleModal("modal-phone");
-    GAME.ui.changeView("view-kitchen");
+    GAME.ui.changeView("view-kitchen", false);
   },
 
   closeInventory() {

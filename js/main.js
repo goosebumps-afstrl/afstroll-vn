@@ -233,8 +233,13 @@ function setupEventListeners() {
     const movePan = (clientX, clientY) => {
         if (!isMapPanning) return;
         
-        const deltaX = clientX - panStartX;
-        const deltaY = clientY - panStartY;
+        if (GAME.logic.storyState && GAME.logic.storyState.sequence) {
+            return; // Drag tidak aktif saat ada cerita berjalan (termasuk video intro 03)
+        }
+
+        const resistance = 0.6; // Tambah berat gesekan
+        const deltaX = (clientX - panStartX) * resistance;
+        const deltaY = (clientY - panStartY) * resistance;
         
         // Ukuran safe zone adalah 100vw x 100vh.
         // Pannable area adalah 3440 / 877.42 kali lebar safe zone
