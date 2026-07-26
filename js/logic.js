@@ -911,16 +911,28 @@ export const logic = {
   seq_3_chloe_start() {
     return [
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro01chloe.jpg",
         effect: "cross-dissolve",
+        wait: 1000,
+        skippable: false,
+      },
+      {
+        type: "dialogue",
+        retainMedia: true,
         name: "Chloe",
         text: "kayanya temen sean buat masalah lagi di bar",
       },
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro02chloe.jpg",
         effect: "cross-dissolve",
+        wait: 500,
+        skippable: false,
+      },
+      {
+        type: "dialogue",
+        retainMedia: true,
         name: "Chloe",
         text: "{name}, sekarang apa yang kamu rasa?",
       },
@@ -950,11 +962,17 @@ export const logic = {
   seq_3_chloe_branch1_pusing() {
     return [
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
+        wait: 500,
+        skippable: false,
+      },
+      {
+        type: "dialogue",
+        retainMedia: true,
         name: "Chloe",
-        text: "Istirahatlah lagi, mungkin sisa alkohol kemarin malam masih ada",
+        text: "iya kamu memang butuh istirahat",
       },
       {
         type: "dialogue",
@@ -972,9 +990,15 @@ export const logic = {
   seq_3_chloe_branch1_cinta() {
     return [
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
+        wait: 500,
+        skippable: false,
+      },
+      {
+        type: "dialogue",
+        retainMedia: true,
         name: "Chloe",
         text: "sepertinya kepala kamu terbentur keras saat pingsan",
       },
@@ -994,11 +1018,11 @@ export const logic = {
   seq_3_chloe_intro03() {
     return [
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
-        name: "Chloe",
-        text: "Ada yang bisa aku bantu?",
+        wait: 500,
+        skippable: false,
       },
       {
         type: "choice",
@@ -1026,11 +1050,17 @@ export const logic = {
   seq_3_chloe_hug() {
     return [
       {
-        type: "dialogue",
+        type: "image",
         src: "assets/images/0003_intro04chloehug01.jpg",
         effect: "cross-dissolve",
+        wait: 500,
+        skippable: false,
+      },
+      {
+        type: "dialogue",
+        retainMedia: true,
         name: "Chloe",
-        text: "Hanya sebentar ya, setelah ini kamu harus makan, ada apa {name}?",
+        text: "ada apa {name}?",
       },
       {
         type: "image",
