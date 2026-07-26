@@ -65,6 +65,18 @@ async function initGame() {
     GAME.audio.init();
     GAME.ui.updateSceneAudio('scene-intro', null); 
 
+    // Add touch listener to start audio context
+    document.body.addEventListener('click', function unlockAudio() {
+        if (!GAME.audio.bgm) return;
+        const activeScene = document.querySelector('.scene.active');
+        if (activeScene) {
+            GAME.ui.updateSceneAudio(activeScene.id);
+        } else {
+            GAME.audio.fadeInAndPlay(GAME.audio.bgm);
+        }
+        document.body.removeEventListener('click', unlockAudio);
+    }, { once: true });
+
     // Pindahkan logika event listener touch/swipe (yang ada di bagian paling bawah file HTML asli Anda) ke sini:
     setupEventListeners();
 }
@@ -178,12 +190,15 @@ function setupEventListeners() {
     let panStartX = 0;
     let panStartY = 0;
 
-    const startPan = (clientX, clientY, e) => {
-        // Jangan geser jika klik panel UI atau HUD
-        if (e.target.closest('.glass-panel-main') || e.target.closest('.glass-hud')) return;
+    const startPan = (clientX, clientY, targetElem) => {
+        const currentView = GAME.state.currentView;
+        
+        // Cek apakah klik terjadi di area yang interaktif (tombol, slider, form, map-label)
+        if (targetElem && targetElem.closest('button, input, select, textarea, .map-label, #door-exit-area')) {
+            return; // Biarkan elemen asli menangani klik/sentuhannya
+        }
         
         // Nonaktifkan geser jika ada modal/panel yang terbuka
-        const currentView = GAME.state.currentView;
         const modalPhone = document.getElementById('modal-phone');
         const modalOption = document.getElementById('modal-option');
         const modalSaveLoad = document.getElementById('modal-saveload');
@@ -253,12 +268,16 @@ function setupEventListeners() {
 
     if (pannableLayer) {
         // Mouse Support
-        pannableLayer.addEventListener('mousedown', (e) => startPan(e.clientX, e.clientY, e));
+        pannableLayer.addEventListener('mousedown', (e) => startPan(e.clientX, e.clientY, e.target));
         document.addEventListener('mousemove', (e) => movePan(e.clientX, e.clientY));
         document.addEventListener('mouseup', endPan);
         
         // Touch Support
-        pannableLayer.addEventListener('touchstart', (e) => startPan(e.touches[0].clientX, e.touches[0].clientY, e), { passive: true });
+        pannableLayer.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                startPan(e.touches[0].clientX, e.touches[0].clientY, e.target);
+            }
+        }, { passive: true });
         document.addEventListener('touchmove', (e) => {
             if (isMapPanning) {
                 // Hindari scroll browser default saat geser peta

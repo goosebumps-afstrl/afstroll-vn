@@ -854,11 +854,14 @@ export const logic = {
     ];
 
     uiElements.forEach((el) => {
-      if (!el) return;
-      el.style.opacity = "0";
-      el.style.pointerEvents = "none";
-      el.style.transition = "opacity 1s ease-in-out";
-    });
+        if (!el) return;
+        el.style.opacity = "0";
+        if (el.id === "global-bottom-ui") {
+          Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "none");
+        }
+        el.style.pointerEvents = "none";
+        el.style.transition = "opacity 1s ease-in-out";
+      });
 
     const wrapper = document.getElementById("view-apartment");
     const icon = document.getElementById("apartment-toggle-icon");
@@ -867,17 +870,21 @@ export const logic = {
     if (!wrapper.classList.contains("minimized")) {
       wrapper.classList.add("minimized");
       icon.classList.add("rotate-180");
-      if (doorExit) {
-        doorExit.classList.remove("hidden");
-        setTimeout(() => doorExit.classList.remove("opacity-0"), 10);
-      }
+    }
+    
+    if (doorExit) {
+      doorExit.classList.remove("hidden");
+      setTimeout(() => doorExit.classList.remove("opacity-0"), 10);
     }
 
     setTimeout(() => {
       uiElements.forEach((el) => {
         if (!el) return;
         el.style.opacity = "1";
-        el.style.pointerEvents = el.id === "dynamic-content" ? "none" : "auto";
+        if (el.id === "global-bottom-ui") {
+          Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
+        }
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
       });
     }, 2000);
   },
@@ -2455,7 +2462,10 @@ export const logic = {
     uiElements.forEach((el) => {
       if (el) {
         el.style.opacity = "1";
-        el.style.pointerEvents = el.id === "dynamic-content" ? "none" : "auto";
+        if (el.id === "global-bottom-ui") {
+          Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
+        }
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
       }
     });
   },
@@ -3381,7 +3391,10 @@ export const logic = {
         uiElements.forEach((el) => {
           if (el) {
             el.style.opacity = "1";
-            el.style.pointerEvents = el.id === "dynamic-content" ? "none" : "auto";
+            if (el.id === "global-bottom-ui") {
+          Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
+        }
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
           }
         });
       }
