@@ -9,7 +9,7 @@ echo Pastikan ffmpeg sudah terinstal.
 for %%f in (*.mp4) do (
     echo --------------------------------------------------
     echo Converting: %%f
-    ffmpeg -i "%%f" -profile:v baseline -level 3.0 -s 1280x720 -start_number 0 -hls_time 10 -hls_list_size 0 -f hls "%%~nf.m3u8"
+    ffmpeg -y -i "%%f" -profile:v baseline -level 3.0 -start_number 0 -hls_time 10 -hls_list_size 0 -f hls "%%~nf.m3u8"
 )
 
 echo --------------------------------------------------
