@@ -672,38 +672,55 @@ export const logic = {
 
       if (newMediaEl) {
         mediaLayer.appendChild(newMediaEl);
-        void newMediaEl.offsetWidth;
 
-        if (stepData.effect === "wake-up") {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("animate-wake-up");
-        } else if (stepData.effect === "blur-shake") {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("animate-blur-shake");
-        } else if (stepData.effect === "blur-pulse-1") {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("animate-blur-pulse-1");
-        } else if (stepData.effect === "blur-pulse-2") {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("animate-blur-pulse-2");
-        } else if (stepData.effect === "blur-oscillate") {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("animate-blur-oscillate");
+        const applyTransition = () => {
+          void newMediaEl.offsetWidth;
+
+          if (stepData.effect === "wake-up") {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("animate-wake-up");
+          } else if (stepData.effect === "blur-shake") {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("animate-blur-shake");
+          } else if (stepData.effect === "blur-pulse-1") {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("animate-blur-pulse-1");
+          } else if (stepData.effect === "blur-pulse-2") {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("animate-blur-pulse-2");
+          } else if (stepData.effect === "blur-oscillate") {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("animate-blur-oscillate");
+          } else {
+            newMediaEl.classList.remove("opacity-0");
+            newMediaEl.classList.add("opacity-100");
+          }
+
+          if (this.storyState.currentMediaEl) {
+            const oldMedia = this.storyState.currentMediaEl;
+            oldMedia.classList.remove("opacity-100");
+            oldMedia.classList.add("opacity-0");
+            oldMedia.classList.replace("z-10", "z-0");
+            setTimeout(() => {
+              if (oldMedia.parentNode) oldMedia.parentNode.removeChild(oldMedia);
+            }, 1500);
+          }
+          this.storyState.currentMediaEl = newMediaEl;
+        };
+
+        if (stepData.type === "video") {
+          let hasTransitioned = false;
+          const doTransition = () => {
+            if (hasTransitioned) return;
+            hasTransitioned = true;
+            applyTransition();
+          };
+          newMediaEl.addEventListener('canplay', doTransition, { once: true });
+          // Fallback just in case canplay doesn't fire
+          setTimeout(doTransition, 2000);
         } else {
-          newMediaEl.classList.remove("opacity-0");
-          newMediaEl.classList.add("opacity-100");
+          applyTransition();
         }
-
-        if (this.storyState.currentMediaEl) {
-          const oldMedia = this.storyState.currentMediaEl;
-          oldMedia.classList.remove("opacity-100");
-          oldMedia.classList.add("opacity-0");
-          oldMedia.classList.replace("z-10", "z-0");
-          setTimeout(() => {
-            if (oldMedia.parentNode) oldMedia.parentNode.removeChild(oldMedia);
-          }, 1500);
-        }
-        this.storyState.currentMediaEl = newMediaEl;
       }
     }
 
@@ -860,7 +877,7 @@ export const logic = {
       uiElements.forEach((el) => {
         if (!el) return;
         el.style.opacity = "1";
-        el.style.pointerEvents = "auto";
+        el.style.pointerEvents = el.id === "dynamic-content" ? "none" : "auto";
       });
     }, 2000);
   },
@@ -3315,8 +3332,10 @@ export const logic = {
         if (GAME.state.storyPhase === 2) {
           GAME.ui.changeView("view-apartment");
           GAME.logic.startStory2Interactive();
+          GAME.ui.updateSceneAudio("scene-maingame");
         } else {
           GAME.ui.changeScene("scene-story", "none");
+          GAME.ui.updateSceneAudio("scene-story");
           if (GAME.state.currentStorySeq) {
             if (GAME.state.currentStorySeq === "getStorySequence1") {
               GAME.logic.initStoryIntro();
@@ -3326,6 +3345,7 @@ export const logic = {
               GAME.state.storyPhase = 1.5;
               GAME.logic.startStory(GAME.logic.getStorySequence2Part1(), () => {
                 GAME.logic.startStory2Interactive();
+                GAME.ui.updateSceneAudio("scene-maingame");
               });
             } else if (
               GAME.state.currentStorySeq === "getStorySequence2Part2"
@@ -3350,6 +3370,7 @@ export const logic = {
         }
       } else {
         GAME.ui.changeScene("scene-maingame", "none");
+        GAME.ui.updateSceneAudio("scene-maingame");
         GAME.ui.changeView(GAME.state.currentView || "view-apartment", false);
         
         const uiElements = [
