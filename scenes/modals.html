@@ -1,0 +1,107 @@
+    <div id="modal-phone" class="absolute inset-0 bg-black/60 z-40 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px; padding: 0;">
+            <div class="text-white p-3 text-[10px] flex justify-between items-center font-medium bg-black/20">
+                <span id="phone-time" class="tracking-wider">Day 1</span>
+                <span>📶 100%</span>
+            </div>
+            
+            <div class="flex-1 px-4 pt-3 pb-16 overflow-y-auto">
+                <div class="relative w-full mb-4 group">
+                    <button id="phone-slider-left" class="absolute left-[-8px] top-[40%] -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-black/80 border border-white/30 items-center justify-center text-white text-[8px] opacity-0 group-hover:opacity-100 transition-opacity hidden" onclick="GAME.ui.scrollPhoneStats(-1)">&#9664;</button>
+                    <button id="phone-slider-right" class="absolute right-[-8px] top-[40%] -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-black/80 border border-white/30 items-center justify-center text-white text-[8px] opacity-0 group-hover:opacity-100 transition-opacity hidden" onclick="GAME.ui.scrollPhoneStats(1)">&#9654;</button>
+                    
+                    <div id="phone-stats-container" class="flex overflow-x-auto snap-x snap-mandatory w-full scrollbar-hide" style="-ms-overflow-style: none; scrollbar-width: none;" onscroll="GAME.ui.updateCarouselDots()">
+                        <!-- Dynamic Content -->
+                    </div>
+                    <div id="phone-stats-dots" class="flex justify-center gap-1.5 mt-2 h-1.5">
+                        <!-- Dots -->
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openSaveLoadMenu()">
+                        <span class="text-xl m-0">💾</span> <span class="font-medium text-[9px]">Save/Load</span>
+                    </button>
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openSahamApp()">
+                        <span class="text-xl m-0">📈</span> <span class="font-medium text-[9px]">Saham</span>
+                    </button>
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openMessageApp()">
+                        <span class="text-xl m-0 flex items-center justify-center relative">💬<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black"></span></span> <span class="font-medium text-[9px]">Message</span>
+                    </button>
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openInventoryFromPhone()">
+                        <span class="text-xl m-0">🎒</span> <span class="font-medium text-[9px]">Item</span>
+                    </button>
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.ui.showToast('Pinjol feature in development')">
+                        <span class="text-xl m-0">💸</span> <span class="font-medium text-[9px]">Pinjol</span>
+                    </button>
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.ui.showToast('Online Shop feature in development')">
+                        <span class="text-xl m-0">🛒</span> <span class="font-medium text-[9px]">Olshop</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 p-3 flex justify-center bg-gradient-to-t from-black/50 to-transparent">
+                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone')" aria-label="Kembali">
+                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-option" class="absolute inset-0 bg-black/70 z-40 hidden flex-col items-center justify-center p-4 backdrop-blur-lg">
+        <div class="glass-panel-main w-full flex flex-col gap-4">
+            <h2 class="text-base font-bold text-center border-b border-white/20 pb-3 mb-1 tracking-wide uppercase">Settings</h2>
+            
+            <div>
+                <p class="text-[10px] text-gray-300 mb-2 uppercase tracking-wider font-semibold">Bahasa</p>
+                <div class="flex gap-2">
+                    <button class="glass-button highlight-blue justify-center flex-1 !mb-0">ID</button>
+                    <button class="glass-button justify-center flex-1 !mb-0 opacity-50">EN</button>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-[10px] text-gray-300 mb-2 uppercase tracking-wider font-semibold">Audio</p>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-3" title="Music Volume">
+                        <span class="text-sm">🎵</span>
+                        <input id="volume-music" type="range" min="0" max="1" step="0.05" value="0.3" class="flex-1 accent-white h-1 bg-white/20 rounded-lg appearance-none outline-none" oninput="GAME.audio.setMusicVolume(this.value)">
+                    </div>
+                    <div class="flex items-center gap-3" title="Sound Effect Volume">
+                        <span class="text-sm">🔊</span>
+                        <input id="volume-sfx" type="range" min="0" max="1" step="0.05" value="0.5" class="flex-1 accent-white h-1 bg-white/20 rounded-lg appearance-none outline-none" oninput="GAME.audio.setSfxVolume(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-1 border-t border-white/20 pt-4">
+                <p class="text-[10px] text-gray-400 font-medium">Developer: GameStudioID</p>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-3">
+                <button class="glass-button justify-center" onclick="GAME.ui.toggleModal('modal-option')">Lanjutkan Game</button>
+                <button class="glass-button highlight justify-center" onclick="location.reload()">Restart Game</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-saveload" class="absolute inset-0 bg-black/70 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-lg">
+        <div class="glass-panel-main w-full flex flex-col h-[75vh] p-0 overflow-hidden" style="border-radius: 30px; padding: 0;">
+            <div class="flex justify-between items-center bg-black/40 p-3 border-b border-white/20">
+                <span class="glass-section-title m-0">Simpan / Muat</span>
+                <button class="glass-button glass-button-mini !w-auto !mb-0 px-3 py-1" onclick="GAME.logic.closeSaveLoadMenu()">Kembali</button>
+            </div>
+            <div id="saveload-list" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2"></div>
+        </div>
+    </div>
+
+    <div id="modal-confirm-overwrite" class="absolute inset-0 bg-black/70 z-[60] hidden flex-col items-center justify-center p-4 backdrop-blur-lg">
+        <div class="glass-panel-main w-full flex flex-col gap-3 p-4 text-center">
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Timpa Save Data?</h2>
+            <p class="text-[10px] text-gray-200 font-light leading-relaxed mb-3">Slot ini sudah berisi data. Yakin ingin menimpanya dengan progres saat ini?</p>
+            <div class="flex gap-2">
+                <button class="flex-1 glass-button justify-center" onclick="GAME.ui.toggleModal('modal-confirm-overwrite')">Batal</button>
+                <button id="confirm-overwrite-btn" class="flex-1 glass-button highlight justify-center" onclick="GAME.logic.confirmOverwrite()">Ya, Timpa</button>
+            </div>
+        </div>
+    </div>

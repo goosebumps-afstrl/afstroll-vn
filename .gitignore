@@ -1,0 +1,6 @@
+# Exclude raw asset materials
+bin/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
