@@ -21,6 +21,12 @@
         <div id="toast">Message</div>
         <div id="screen-fader"></div>
 
+        <!-- Tap to Start Overlay (Bypasses Browser Autoplay Audio Policy) -->
+        <div id="tap-to-start" class="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black cursor-pointer transition-opacity duration-1000" onclick="this.style.opacity='0'; setTimeout(() => this.remove(), 1000);">
+            <div class="text-white text-xl animate-pulse font-bold tracking-widest uppercase mb-4">Tap Anywhere to Start</div>
+            <div class="text-gray-400 text-xs">Untuk mengaktifkan audio & musik pada game</div>
+        </div>
+
         <!-- Wadah Scene (Akan diisi otomatis oleh JavaScript) -->
         <div id="scene-intro" class="scene active"></div>
         <div id="scene-input" class="scene"></div>

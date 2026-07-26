@@ -61,6 +61,34 @@ async function initGame() {
         loadHTMLPart('scenes/modals.html', 'modals-container')
     ]);
 
+    // Preload important images
+    const imagesToPreload = [
+        'assets/images/0001_party_intro01.jpg',
+        'assets/images/0001_party_intro02.jpg',
+        'assets/images/0001_party_intro03.jpg',
+        'assets/images/0001_party_intro04.jpg',
+        'assets/images/0002_intro01.jpg',
+        'assets/images/0002_intro02.jpg',
+        'assets/images/0002_intro04.jpg',
+        'assets/images/0003_intro01chloe.jpg',
+        'assets/images/0003_intro02chloe.jpg',
+        'assets/images/0003_intro03chloe.jpg',
+        'assets/images/0003_intro04chloehug01.jpg',
+        'assets/images/0003_intro04chloehug02.jpg',
+        'assets/images/apartment-day-bg.jpg',
+        'assets/images/apartment-night-bg.jpg',
+        'assets/images/taman-kota.jpg',
+        'assets/images/gudang-kota.jpg',
+        'assets/images/exclusive-apt.jpg',
+        'assets/images/kasur-bg.jpg',
+        'assets/images/bathroom-bg.jpg',
+        'assets/images/kitchen-bg.jpg'
+    ];
+    imagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     // Setelah semua HTML masuk, inisialisasi Audio dan Script bawaan
     GAME.audio.init();
     GAME.ui.updateSceneAudio('scene-intro', null); 
@@ -234,7 +262,10 @@ function setupEventListeners() {
         if (!isMapPanning) return;
         
         if (GAME.logic.storyState && GAME.logic.storyState.sequence) {
-            return; // Drag tidak aktif saat ada cerita berjalan (termasuk video intro 03)
+            return; // Drag tidak aktif saat ada cerita berjalan 
+        }
+        if (GAME.state.storyPhase === 2) {
+            return; // Drag tidak aktif saat interactive scene awal bersama Chloe
         }
 
         const resistance = 0.6; // Tambah berat gesekan

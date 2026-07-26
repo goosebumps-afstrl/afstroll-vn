@@ -502,9 +502,10 @@ export const logic = {
     this.storyState.onComplete = onComplete || null;
 
     const sceneStory = document.getElementById("scene-story");
+    document.getElementById("story-media-layer").innerHTML = "";
+    this.storyState.currentMediaEl = null;
+    
     if (!sceneStory.classList.contains("active")) {
-      document.getElementById("story-media-layer").innerHTML = "";
-      this.storyState.currentMediaEl = null;
       GAME.ui.changeScene("scene-story");
     }
 
@@ -911,28 +912,16 @@ export const logic = {
   seq_3_chloe_start() {
     return [
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro01chloe.jpg",
         effect: "cross-dissolve",
-        wait: 1000,
-        skippable: false,
-      },
-      {
-        type: "dialogue",
-        retainMedia: true,
         name: "Chloe",
         text: "kayanya temen sean buat masalah lagi di bar",
       },
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro02chloe.jpg",
         effect: "cross-dissolve",
-        wait: 500,
-        skippable: false,
-      },
-      {
-        type: "dialogue",
-        retainMedia: true,
         name: "Chloe",
         text: "{name}, sekarang apa yang kamu rasa?",
       },
@@ -962,17 +951,11 @@ export const logic = {
   seq_3_chloe_branch1_pusing() {
     return [
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
-        wait: 500,
-        skippable: false,
-      },
-      {
-        type: "dialogue",
-        retainMedia: true,
         name: "Chloe",
-        text: "iya kamu memang butuh istirahat",
+        text: "Istirahatlah lagi, mungkin sisa alkohol kemarin malam masih ada",
       },
       {
         type: "dialogue",
@@ -990,15 +973,9 @@ export const logic = {
   seq_3_chloe_branch1_cinta() {
     return [
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
-        wait: 500,
-        skippable: false,
-      },
-      {
-        type: "dialogue",
-        retainMedia: true,
         name: "Chloe",
         text: "sepertinya kepala kamu terbentur keras saat pingsan",
       },
@@ -1018,11 +995,11 @@ export const logic = {
   seq_3_chloe_intro03() {
     return [
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro03chloe.jpg",
         effect: "cross-dissolve",
-        wait: 500,
-        skippable: false,
+        name: "Chloe",
+        text: "Ada yang bisa aku bantu?",
       },
       {
         type: "choice",
@@ -1050,17 +1027,11 @@ export const logic = {
   seq_3_chloe_hug() {
     return [
       {
-        type: "image",
+        type: "dialogue",
         src: "assets/images/0003_intro04chloehug01.jpg",
         effect: "cross-dissolve",
-        wait: 500,
-        skippable: false,
-      },
-      {
-        type: "dialogue",
-        retainMedia: true,
         name: "Chloe",
-        text: "ada apa {name}?",
+        text: "Hanya sebentar ya, setelah ini kamu harus makan, ada apa {name}?",
       },
       {
         type: "image",
@@ -3283,6 +3254,11 @@ export const logic = {
       }
 
       GAME.state = JSON.parse(savedStateJSON);
+
+      if (GAME.logic.storyState.waitTimeout) clearTimeout(GAME.logic.storyState.waitTimeout);
+      if (GAME.logic.storyState.typingTimeout) clearInterval(GAME.logic.storyState.typingTimeout);
+      GAME.logic.storyState.sequence = null;
+      GAME.logic.storyState.step = 0;
 
       if (GAME.state.storyPhase === undefined) {
         GAME.state.storyPhase = 4;
