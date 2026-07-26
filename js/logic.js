@@ -502,10 +502,9 @@ export const logic = {
     this.storyState.onComplete = onComplete || null;
 
     const sceneStory = document.getElementById("scene-story");
-    document.getElementById("story-media-layer").innerHTML = "";
-    this.storyState.currentMediaEl = null;
-    
     if (!sceneStory.classList.contains("active")) {
+      document.getElementById("story-media-layer").innerHTML = "";
+      this.storyState.currentMediaEl = null;
       GAME.ui.changeScene("scene-story");
     }
 
