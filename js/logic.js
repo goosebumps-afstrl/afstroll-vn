@@ -1597,6 +1597,7 @@ export const logic = {
           history.unshift(lastVal);
         }
         sp.history = history;
+        sp.prev = history[history.length - 2];
       }
     });
     GAME.ui.toggleModal("modal-phone");
@@ -1628,10 +1629,14 @@ export const logic = {
     const maxShares = Math.floor(GAME.state.money / price);
     const inputEl = document.getElementById("saham-amount");
     
-    if (amount > maxShares) {
-      amount = maxShares;
+    let currentVal = parseInt(inputEl.value);
+    if (isNaN(currentVal)) currentVal = 0;
+    
+    let newVal = currentVal + amount;
+    if (newVal > maxShares) {
+      newVal = maxShares;
     }
-    inputEl.value = amount;
+    inputEl.value = newVal;
   },
 
   clampSahamAmount() {
