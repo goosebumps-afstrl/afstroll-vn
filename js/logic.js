@@ -8,9 +8,6 @@ export const logic = {
   ...chloeWinStory,
   ...seanPhase01Story,
   ...seanWinStory,
-export const logic = {
-  ...chloePhase01Story,
-  ...chloeWinStory,
   storyState: {
     step: 0,
     sequence: [],
@@ -1044,7 +1041,7 @@ export const logic = {
         GAME.state.stats.composure > 0 &&
         GAME.state.stats.composure <= 20
       ) {
-        GAME.ui.showToast("âš ï¸ Sangat lapar, mentalmu mulai goyah!");
+        GAME.ui.showToast("Ã¢Å¡Â Ã¯Â¸Â Sangat lapar, mentalmu mulai goyah!");
         GAME.state.composureWarned = true;
       }
     } else if (GAME.state.composureWarned && GAME.state.stats.composure > 20) {
@@ -1213,7 +1210,7 @@ export const logic = {
     }
 
     if (GAME.state.stats.energy < eCost) {
-      GAME.ui.showToast("âŒ Energi tidak cukup untuk bekerja!");
+      GAME.ui.showToast("Ã¢ÂÅ’ Energi tidak cukup untuk bekerja!");
       return;
     }
 
@@ -1742,7 +1739,7 @@ export const logic = {
       GAME.ui.updateHUD();
       GAME.ui.showToast(`Berhasil membeli ${item.name}`);
     } else {
-      GAME.ui.showToast("âŒ Uang tidak cukup!");
+      GAME.ui.showToast("Ã¢ÂÅ’ Uang tidak cukup!");
     }
   },
 

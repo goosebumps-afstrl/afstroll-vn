@@ -1,4 +1,4 @@
-﻿export const chloePhase01Story = {
+export const chloePhase01Story = {
   seq_3_chloe_start() {
     return [
       {

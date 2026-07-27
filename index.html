@@ -20,6 +20,14 @@
         <!-- UI Global -->
         <div id="toast">Message</div>
         <div id="screen-fader"></div>
+        <div id="error-display" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 9999; background: red; color: white; padding: 20px; display: none;"></div>
+        <script>
+            window.addEventListener('error', function(e) {
+                var d = document.getElementById('error-display');
+                d.style.display = 'block';
+                d.innerHTML += '<p>' + e.message + ' at ' + e.filename + ':' + e.lineno + '</p>';
+            });
+        </script>
 
         <!-- Tap to Start Overlay (Bypasses Browser Autoplay Audio Policy) -->
         <div id="tap-to-start" class="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black cursor-pointer transition-opacity duration-1000" onclick="this.style.opacity='0'; setTimeout(() => this.remove(), 1000);">

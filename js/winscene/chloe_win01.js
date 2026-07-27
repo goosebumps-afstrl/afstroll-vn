@@ -1,4 +1,4 @@
-﻿export const chloeWinStory = {
+export const chloeWinStory = {
   startWinScene() {
     GAME.ui.initWinBars();
     return [
