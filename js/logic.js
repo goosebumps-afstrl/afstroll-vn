@@ -860,7 +860,7 @@ export const logic = {
     }
 
     const uiElements = [
-      document.querySelector("#scene-maingame > .w-full.p-3"),
+      document.getElementById("global-top-ui"),
       document.getElementById("dynamic-content"),
       document.getElementById("global-bottom-ui"),
     ];
@@ -936,7 +936,7 @@ export const logic = {
     GAME.ui.updateBackground();
 
     const uiElements = [
-      document.querySelector("#scene-maingame > .w-full.p-3"),
+      document.getElementById("global-top-ui"),
       document.getElementById("dynamic-content"),
       document.getElementById("global-bottom-ui"),
     ];
@@ -1963,7 +1963,7 @@ export const logic = {
         GAME.ui.changeView(GAME.state.currentView || "view-apartment", false);
         
         const uiElements = [
-          document.querySelector("#scene-maingame > .w-full.p-3"),
+          document.getElementById("global-top-ui"),
           document.getElementById("dynamic-content"),
           document.getElementById("global-bottom-ui"),
         ];

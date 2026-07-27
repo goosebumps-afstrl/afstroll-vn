@@ -99,6 +99,17 @@ export const ui = {
       target.classList.add("active", "animate-fade-in");
       this.updateSceneAudio(sceneId, oldScene ? oldScene.id : null);
     }
+
+    const globalTopUI = document.getElementById("global-top-ui");
+    if (globalTopUI) {
+      if (sceneId === "scene-maingame" || sceneId === "scene-story") {
+        globalTopUI.classList.remove("opacity-0", "pointer-events-none");
+        globalTopUI.classList.add("opacity-100");
+      } else {
+        globalTopUI.classList.remove("opacity-100");
+        globalTopUI.classList.add("opacity-0", "pointer-events-none");
+      }
+    }
   },
 
   updateSceneAudio(sceneId, oldSceneId) {

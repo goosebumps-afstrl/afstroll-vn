@@ -43,6 +43,61 @@
         <div id="scene-maingame" class="scene" style="justify-content: flex-start;"></div>
         <div id="scene-gameover" class="scene bg-black cursor-pointer"></div>
 
+        <!-- Global Top UI (Stats & Time/Money) -->
+        <div id="global-top-ui" class="absolute top-0 left-0 right-0 bottom-0 pointer-events-none z-30 opacity-0 transition-opacity duration-1000">
+            <div class="w-full p-3 flex justify-between items-start pointer-events-none">
+                <div class="glass-hud flex flex-col gap-2 w-28 pointer-events-auto">
+                    <div>
+                        <div class="flex justify-between text-[8px] font-medium text-gray-200 mb-0.5">
+                            <span>Energy</span><span class="text-yellow-400 hud-text-energy">30%</span>
+                        </div>
+                        <div class="hud-bar">
+                            <div class="hud-fill fill-energy hud-bar-energy" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[8px] font-medium text-gray-200 mb-0.5">
+                            <span>Hunger</span><span class="text-orange-400 hud-text-hunger">90%</span>
+                        </div>
+                        <div class="hud-bar">
+                            <div class="hud-fill fill-hunger hud-bar-hunger" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[8px] font-medium text-gray-200 mb-0.5">
+                            <span>Composure</span><span class="text-blue-400 hud-text-composure">75%</span>
+                        </div>
+                        <div class="hud-bar">
+                            <div class="hud-fill fill-composure hud-bar-composure" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW CIRCLE HUD TOP RIGHT -->
+            <div class="absolute top-[-40px] right-[-30px] w-[200px] h-[200px] rounded-full pointer-events-none flex flex-col items-end justify-center pr-20 pt-10 shadow-2xl"
+                style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.5); transform: scale(0.7); transform-origin: top right;">
+                <div class="flex items-center gap-1 text-white mb-1.5">
+                    <span class="text-xs font-light tracking-wide hud-ui-dayname">Senin</span>
+                    <span class="text-xs font-light">|</span>
+                    <span class="text-xs font-light tracking-wide hud-ui-daytime-day">Day 0</span>
+                </div>
+
+                <div class="w-20 h-[1px] bg-white/20 mb-1.5"></div>
+
+                <div class="flex items-center gap-1.5 mb-2 text-right">
+                    <span class="text-[10px] font-medium text-gray-200 tracking-wide hud-ui-daytime-phase">Tengah Malam</span>
+                    <span class="text-sm hud-ui-daytime-icon">🌙</span>
+                </div>
+
+                <div class="flex items-center gap-1.5 text-right">
+                    <span class="text-[7px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">Wallet</span>
+                    <span class="text-xs font-bold text-green-400 tracking-wider"><span
+                            class="text-green-500/80 mr-0.5">$</span><span class="hud-ui-money">150</span></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Global Bottom UI (Option & Phone) -->
         <div id="global-bottom-ui" class="absolute bottom-4 left-4 right-4 flex justify-between items-end z-30 pointer-events-none opacity-0 transition-opacity duration-1000">
             <button class="glass-hud w-7 h-7 p-0 rounded-full flex items-center justify-center hover:bg-white/20 transition-transform duration-200 active:scale-95" onclick="event.stopPropagation(); GAME.ui.toggleModal('modal-option')" aria-label="Option Settings">
