@@ -148,12 +148,26 @@ function setupEventListeners() {
 
         const modalSaveLoad = document.getElementById('modal-saveload');
         const modalPhone = document.getElementById('modal-phone');
+        const modalPhoneMessage = document.getElementById('modal-phone-message');
+        const modalPhoneInventory = document.getElementById('modal-phone-inventory');
+        const modalPhonePinjol = document.getElementById('modal-phone-pinjol');
         const modalOption = document.getElementById('modal-option');
         const modalConfirm = document.getElementById('modal-confirm-overwrite');
 
         const isPhoneOpen = modalPhone && !modalPhone.classList.contains('hidden');
+        const isAppOpen = (modalPhoneMessage && !modalPhoneMessage.classList.contains('hidden')) || 
+                          (modalPhoneInventory && !modalPhoneInventory.classList.contains('hidden')) || 
+                          (modalPhonePinjol && !modalPhonePinjol.classList.contains('hidden'));
 
         if (isHorizontal && diffX < -40) {
+            // Priority 1: Phone Apps
+            if (isAppOpen) {
+                if (!modalPhoneMessage.classList.contains('hidden')) GAME.ui.toggleModal('modal-phone-message');
+                if (!modalPhoneInventory.classList.contains('hidden')) GAME.ui.toggleModal('modal-phone-inventory');
+                if (!modalPhonePinjol.classList.contains('hidden')) GAME.ui.toggleModal('modal-phone-pinjol');
+                GAME.ui.toggleModal('modal-phone');
+                return;
+            }
             if (isPhoneOpen) return;
 
             if (modalConfirm && !modalConfirm.classList.contains('hidden')) {
@@ -179,6 +193,7 @@ function setupEventListeners() {
                 }
             }
         } else if (isHorizontal && diffX > 40) {
+            if (isAppOpen) return;
             if (isPhoneOpen) return;
             if (GAME.state.currentView === 'view-jobs') {
                 GAME.ui.swipeJobRight();

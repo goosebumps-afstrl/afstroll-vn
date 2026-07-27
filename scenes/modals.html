@@ -145,15 +145,11 @@
     <!-- PHONE MESSAGE MODAL -->
     <div id="modal-phone-message" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
         <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
-            <div class="bg-black/40 p-3 pb-2 text-center border-b border-white/10 shrink-0">
-                <h3 class="text-xs font-bold text-white tracking-widest uppercase">Messages</h3>
+            <div class="bg-black/40 p-3 pb-2 flex items-center border-b border-white/10 shrink-0">
+                <button class="text-white mr-2" onclick="GAME.ui.toggleModal('modal-phone-message'); GAME.ui.toggleModal('modal-phone')">&#9664;</button>
+                <h3 class="text-xs font-bold text-white tracking-widest uppercase flex-1 text-center pr-4">Messages</h3>
             </div>
             <div id="phone-message-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-2"></div>
-            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-white/10">
-                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-message'); GAME.ui.toggleModal('modal-phone')" aria-label="Kembali">
-                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
-                </button>
-            </div>
         </div>
     </div>
 
