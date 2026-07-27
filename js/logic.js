@@ -1,6 +1,13 @@
-﻿import { chloePhase01Story } from './npcstory/chloe/story_chloe_phase01.js';
+import { chloePhase01Story } from './npcstory/chloe/story_chloe_phase01.js';
 import { chloeWinStory } from './winscene/chloe_win01.js';
+import { seanPhase01Story } from './npcstory/sean/story_sean_phase01.js';
+import { seanWinStory } from './winscene/sean_win01.js';
 
+export const logic = {
+  ...chloePhase01Story,
+  ...chloeWinStory,
+  ...seanPhase01Story,
+  ...seanWinStory,
 export const logic = {
   ...chloePhase01Story,
   ...chloeWinStory,
@@ -909,8 +916,7 @@ export const logic = {
       if (GAME.state.gender === "Pria") {
         GAME.logic.gotoSeq("seq_3_chloe_start");
       } else {
-        GAME.ui.showToast("Rute Sean dalam pengembangan.");
-        GAME.logic.startGameReal();
+        GAME.logic.gotoSeq("seq_3_sean_start");
       }
     });
   },
@@ -1933,9 +1939,15 @@ export const logic = {
               GAME.logic.triggerStory2Part2();
             } else if (
               GAME.state.currentStorySeq === "chloeMinigamePhase" ||
-              GAME.state.currentStorySeq === "seq_3_chloe_intimacy"
+              GAME.state.currentStorySeq === "seq_3_chloe_intimacy" ||
+              GAME.state.currentStorySeq === "seanMinigamePhase" ||
+              GAME.state.currentStorySeq === "seq_3_sean_intimacy"
             ) {
-              GAME.logic.gotoSeq("seq_3_chloe_intimacy");
+              if (GAME.state.currentStorySeq.includes("chloe")) {
+                GAME.logic.gotoSeq("seq_3_chloe_intimacy");
+              } else {
+                GAME.logic.gotoSeq("seq_3_sean_intimacy");
+              }
             } else if (GAME.logic[GAME.state.currentStorySeq]) {
               GAME.logic.gotoSeq(GAME.state.currentStorySeq);
             } else {
