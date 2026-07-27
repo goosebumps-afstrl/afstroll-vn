@@ -471,8 +471,8 @@ export const ui = {
     
     GAME.constants.shopItems.forEach((item) => {
       const el = document.createElement("div");
-      // Flexible frame design instead of strict square
-      el.className = "relative bg-black/40 p-2 rounded-xl border border-white/10 shadow-lg flex flex-col items-center justify-between overflow-hidden group";
+      // Flexible frame design with minimum height to prevent squishing
+      el.className = "relative bg-black/40 p-2 rounded-xl border border-white/10 shadow-lg flex flex-col items-center justify-between overflow-hidden group min-h-[130px]";
       
       let statsHtml = "";
       if (item.type === 'food') {
@@ -647,7 +647,7 @@ export const ui = {
       
       GAME.constants.pinjolOptions.forEach(loan => {
           const el = document.createElement("div");
-          el.className = "bg-black/60 rounded-xl p-3 border border-red-500/20 shadow-md relative overflow-hidden group";
+          el.className = "bg-black/60 rounded-xl p-3 border border-red-500/20 shadow-md relative overflow-hidden group shrink-0";
           
           const activeLoan = GAME.state.loans.find(l => l.loanId === loan.id);
           
