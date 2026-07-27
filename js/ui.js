@@ -461,15 +461,15 @@ export const ui = {
     
     GAME.constants.shopItems.forEach((item) => {
       const el = document.createElement("div");
-      // Square frame design
-      el.className = "relative bg-black/40 p-2 rounded-xl border border-white/10 shadow-lg flex flex-col items-center justify-between overflow-hidden group aspect-square";
+      // Flexible frame design instead of strict square
+      el.className = "relative bg-black/40 p-2 rounded-xl border border-white/10 shadow-lg flex flex-col items-center justify-between overflow-hidden group";
       
       let statsHtml = "";
       if (item.type === 'food') {
           const hText = item.h !== 0 ? (item.h > 0 ? `+${item.h} H` : `${item.h} H`) : "";
           const eText = item.e !== 0 ? (item.e > 0 ? `+${item.e} E` : `${item.e} E`) : "";
-          const sep = hText && eText ? ", " : "";
-          statsHtml = `<div class="text-[7px] text-green-300 font-medium tracking-wide leading-none mt-1 text-center">${hText}${sep}${eText}</div>`;
+          const sep = hText && eText ? " | " : "";
+          statsHtml = `<div class="text-[8px] bg-green-900/40 border border-green-500/30 text-green-300 rounded px-1 font-medium tracking-wide leading-none mt-1 text-center">${hText}${sep}${eText}</div>`;
       }
 
       el.innerHTML = `
@@ -481,9 +481,9 @@ export const ui = {
           </div>
           
           <!-- Info Item -->
-          <div class="w-full flex flex-col items-center justify-end flex-1 text-center mt-1">
-              <div class="font-bold text-[9px] tracking-wide text-white leading-tight line-clamp-1 w-full">${item.name}</div>
-              <div class="text-[10px] font-bold text-yellow-400 mt-0.5">$${item.price}</div>
+          <div class="w-full flex flex-col items-center justify-end flex-1 text-center mt-1 pb-1">
+              <div class="font-bold text-[10px] tracking-wide text-white leading-tight line-clamp-1 w-full" title="${item.name}">${item.name}</div>
+              <div class="text-[11px] font-bold text-yellow-400 mt-0.5 bg-black/40 px-1.5 rounded">$${item.price}</div>
               ${statsHtml}
           </div>
 
