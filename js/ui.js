@@ -855,10 +855,22 @@ export const ui = {
     gradient.addColorStop(0, gradientStartColor);
     gradient.addColorStop(1, "rgba(0,0,0,0.0)");
 
+    const timeLabels = ["00.00", "04.00", "08.00", "12.00", "16.00", "20.00"];
+    const labels = data.map((_, i) => {
+      if (data.length <= 1) return "";
+      const step = (data.length - 1) / 5;
+      for (let j = 0; j < 6; j++) {
+        if (Math.round(j * step) === i) {
+          return timeLabels[j];
+        }
+      }
+      return "";
+    });
+
     window.sahamChartInstance = new Chart(ctx, {
       type: "line",
       data: {
-        labels: data.map(() => ""),
+        labels: labels,
         datasets: [
           {
             data: data,
@@ -876,7 +888,19 @@ export const ui = {
         maintainAspectRatio: false,
         plugins: { legend: { display: false }, tooltip: { enabled: false } },
         scales: {
-          x: { display: false },
+          x: { 
+            display: true,
+            grid: {
+              color: (context) => context.tick && context.tick.label ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+              drawBorder: false
+            },
+            ticks: {
+              color: 'rgba(255, 255, 255, 0.5)',
+              font: { size: 7 },
+              maxRotation: 0,
+              autoSkip: false
+            }
+          },
           y: { display: false, beginAtZero: false, grace: "20%" },
         },
         animation: { duration: 500, easing: "easeInOutQuad" },
