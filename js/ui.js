@@ -103,11 +103,11 @@ export const ui = {
     const globalTopUI = document.getElementById("global-top-ui");
     if (globalTopUI) {
       if (sceneId === "scene-maingame" || sceneId === "scene-story") {
-        globalTopUI.classList.remove("opacity-0", "pointer-events-none");
+        globalTopUI.classList.remove("opacity-0");
         globalTopUI.classList.add("opacity-100");
       } else {
         globalTopUI.classList.remove("opacity-100");
-        globalTopUI.classList.add("opacity-0", "pointer-events-none");
+        globalTopUI.classList.add("opacity-0");
       }
     }
   },

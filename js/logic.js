@@ -896,7 +896,7 @@ export const logic = {
         if (el.id === "global-bottom-ui") {
           Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
         }
-        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui" || el.id === "global-top-ui") ? "none" : "";
       });
     }, 2000);
   },
@@ -946,7 +946,7 @@ export const logic = {
         if (el.id === "global-bottom-ui") {
           Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
         }
-        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui" || el.id === "global-top-ui") ? "none" : "";
       }
     });
 
@@ -1973,7 +1973,7 @@ export const logic = {
             if (el.id === "global-bottom-ui") {
           Array.from(el.querySelectorAll("button")).forEach(b => b.style.pointerEvents = "auto");
         }
-        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
+        el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui" || el.id === "global-top-ui") ? "none" : "";
           }
         });
       }
