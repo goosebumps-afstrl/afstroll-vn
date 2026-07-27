@@ -1569,12 +1569,7 @@ export const logic = {
   },
 
   openSahamApp() {
-    const activeDynamicView = document.querySelector(
-      "#dynamic-content > div:not(.hidden):not(#door-exit-area)",
-    );
-    if (activeDynamicView) {
-      GAME.state.previousView = activeDynamicView.id;
-    }
+    GAME.state.previousView = GAME.state.currentView;
     if (!GAME.state.portfolio) {
       GAME.state.portfolio = {};
       GAME.constants.stocks.forEach(
@@ -1623,6 +1618,34 @@ export const logic = {
     document.getElementById("saham-amount").value = 1;
     GAME.ui.changeView("view-saham-detail", false);
     GAME.ui.renderSahamDetail();
+  },
+
+  setSahamAmount(amount) {
+    const id = GAME.state.activeStockId;
+    if (!id) return;
+    const stockData = GAME.state.stockPrices[id];
+    const price = Math.floor(stockData.current);
+    const maxShares = Math.floor(GAME.state.money / price);
+    const inputEl = document.getElementById("saham-amount");
+    
+    if (amount > maxShares) {
+      amount = maxShares;
+    }
+    inputEl.value = amount;
+  },
+
+  clampSahamAmount() {
+    const id = GAME.state.activeStockId;
+    if (!id) return;
+    const stockData = GAME.state.stockPrices[id];
+    const price = Math.floor(stockData.current);
+    const maxShares = Math.floor(GAME.state.money / price);
+    const inputEl = document.getElementById("saham-amount");
+    
+    let val = parseInt(inputEl.value);
+    if (!isNaN(val) && val > maxShares) {
+      inputEl.value = maxShares;
+    }
   },
 
   buyStock() {

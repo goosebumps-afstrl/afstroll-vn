@@ -801,17 +801,31 @@ export const ui = {
     document.getElementById("saham-detail-avg-buy").innerText =
       `$${avgBuyPrice.toFixed(2)}`;
     profitEl.innerText = `${profitLoss >= 0 ? "+" : ""}$${profitLoss.toFixed(2)}`;
-
+  
     profitEl.classList.remove(
       "text-green-400",
       "text-red-400",
       "text-gray-400",
     );
-    if (profitLoss > 0) {
-      profitEl.classList.add("text-green-400");
-    } else if (profitLoss < 0) {
-      profitEl.classList.add("text-red-400");
+
+    const totalValEl = document.getElementById("saham-detail-total-value");
+    if (owned > 0) {
+      const totalValue = owned * data.current;
+      totalValEl.innerText = `$${Math.floor(totalValue)}`;
+      totalValEl.classList.remove("hidden", "text-green-400", "text-red-400", "text-gray-400");
+      
+      if (profitLoss > 0) {
+        profitEl.classList.add("text-green-400");
+        totalValEl.classList.add("text-green-400");
+      } else if (profitLoss < 0) {
+        profitEl.classList.add("text-red-400");
+        totalValEl.classList.add("text-red-400");
+      } else {
+        profitEl.classList.add("text-gray-400");
+        totalValEl.classList.add("text-gray-400");
+      }
     } else {
+      totalValEl.classList.add("hidden");
       profitEl.classList.add("text-gray-400");
     }
     this.renderStockChart(id, "saham-chart");

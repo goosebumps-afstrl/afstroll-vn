@@ -211,6 +211,7 @@
                 <div class="text-right">
                     <p class="text-[7px] text-gray-400 uppercase tracking-widest mb-0.5">Dimiliki</p>
                     <p id="saham-detail-owned" class="text-[11px] font-bold text-blue-300">0 Lembar</p>
+                    <p id="saham-detail-total-value" class="text-[10px] font-bold mt-0.5 hidden">$0</p>
                 </div>
             </div>
 
@@ -236,16 +237,16 @@
                 <div class="flex gap-1.5">
                     <button
                         class="glass-button glass-button-mini !mb-0 flex-1 justify-center bg-white/5 !py-0.5 !px-1.5 !text-[9px]"
-                        onclick="document.getElementById('saham-amount').value = 1">1</button>
+                        onclick="GAME.logic.setSahamAmount(1)">1</button>
                     <button
                         class="glass-button glass-button-mini !mb-0 flex-1 justify-center bg-white/5 !py-0.5 !px-1.5 !text-[9px]"
-                        onclick="document.getElementById('saham-amount').value = 10">10</button>
+                        onclick="GAME.logic.setSahamAmount(10)">10</button>
                     <button
                         class="glass-button glass-button-mini !mb-0 flex-1 justify-center bg-white/5 !py-0.5 !px-1.5 !text-[9px]"
-                        onclick="document.getElementById('saham-amount').value = 'MAX'">MAX</button>
+                        onclick="GAME.logic.setSahamAmount(100)">100</button>
                 </div>
                 <input type="text" id="saham-amount" class="custom-input !py-0.5 !text-[10px] mt-1" value="1"
-                    placeholder="0">
+                    placeholder="0" oninput="GAME.logic.clampSahamAmount()">
             </div>
 
             <div class="flex gap-1.5 mt-1.5">
