@@ -3,7 +3,7 @@
             <source src="assets/videos/0002_intro03.m3u8" type="application/x-mpegURL">
         </video>
 
-        <div id="pannable-layer" class="absolute z-0 transition-transform duration-300 ease-out" style="width: 392.06vw; height: 123.08vh; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+        <div id="pannable-layer" class="absolute z-0 transition-transform duration-300 ease-out" style="width: 392.06%; height: 123.08%; left: 50%; top: 50%; transform: translate(-50%, -50%);">
             <div id="background-layer" class="absolute inset-0 bg-cover bg-center" style="background-image: url('assets/images/apartment-day-bg.jpg');">
                 <div class="overlay"></div>
             </div>
@@ -40,8 +40,8 @@
             </div>
         </div>
         
-        <div class="w-full p-3 flex justify-between items-start z-20">
-            <div class="glass-hud flex flex-col gap-2 w-28">
+        <div class="w-full p-3 flex justify-between items-start z-20 pointer-events-none">
+            <div class="glass-hud flex flex-col gap-2 w-28 pointer-events-auto">
                 <div>
                     <div class="flex justify-between text-[8px] font-medium text-gray-200 mb-0.5">
                         <span>Energy</span><span class="text-yellow-400 hud-text-energy">30%</span>
@@ -61,20 +61,27 @@
                     <div class="hud-bar"><div class="hud-fill fill-composure hud-bar-composure" style="width: 75%"></div></div>
                 </div>
             </div>
+        </div>
 
-            <div class="flex flex-col items-end gap-2">
-                <div class="glass-hud !p-0 flex items-stretch rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-500/40 to-indigo-500/40 px-2.5 py-1.5 flex items-center justify-center border-r border-white/20">
-                        <span class="text-[9px] font-bold text-white uppercase tracking-widest hud-ui-dayname drop-shadow-md">SENIN</span>
-                    </div>
-                    <div class="px-3 py-1.5 flex items-center justify-center bg-black/20">
-                        <span class="text-[10px] font-semibold text-green-400 tracking-wide hud-ui-daytime">Sore, Day 1</span>
-                    </div>
-                </div>
-                <div class="glass-hud px-3 py-1.5 flex items-center gap-1.5 rounded-full">
-                    <span class="text-yellow-500 font-bold text-xs">$</span>
-                    <span class="text-xs font-bold text-white tracking-wide hud-ui-money">20</span>
-                </div>
+        <!-- NEW CIRCLE HUD TOP RIGHT -->
+        <div class="absolute top-[-50px] right-[-15px] w-[200px] h-[200px] rounded-full z-20 pointer-events-none flex flex-col items-end justify-center pr-8 pt-10 shadow-2xl" 
+             style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="flex items-center gap-1 text-white mb-1.5">
+                <span class="text-xs font-light tracking-wide hud-ui-dayname">Senin</span>
+                <span class="text-xs font-light">|</span>
+                <span class="text-xs font-light tracking-wide hud-ui-daytime-day">Day 0</span>
+            </div>
+            
+            <div class="w-20 h-[1px] bg-white/20 mb-1.5"></div>
+
+            <div class="flex items-center gap-1.5 mb-2 text-right">
+                <span class="text-[10px] font-medium text-gray-200 tracking-wide hud-ui-daytime-phase">Tengah Malam</span>
+                <span class="text-sm hud-ui-daytime-icon">🌙</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-right">
+                <span class="text-[7px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">Wallet</span>
+                <span class="text-xs font-bold text-green-400 tracking-wider"><span class="text-green-500/80 mr-0.5">$</span><span class="hud-ui-money">150</span></span>
             </div>
         </div>
 
@@ -122,12 +129,28 @@
                 </button>
             </div>
 
-            <div id="view-kitchen" class="glass-panel-main hidden flex-col h-[55vh] w-[85%] mb-3">
-                <div class="flex justify-between items-center mb-3 border-b border-white/20 pb-2">
-                    <span class="glass-section-title m-0">Inventory Makanan</span>
+            <div id="view-kitchen" class="glass-panel-main hidden flex-col h-[65vh] w-[90%] mb-3">
+                <div class="flex justify-between items-center mb-3 border-b border-white/20 pb-2 shrink-0">
+                    <span class="glass-section-title m-0">Kulkas & Lemari</span>
                     <button class="glass-button glass-button-mini !w-auto !mb-0 px-3 py-1" onclick="GAME.logic.closeInventory()">Kembali</button>
                 </div>
-                <div id="kitchen-inventory" class="overflow-y-auto flex-1 flex flex-col gap-2"></div>
+                
+                <div id="kitchen-inventory" class="overflow-y-auto flex-1 grid grid-cols-4 gap-2 content-start pb-2"></div>
+
+                <div id="kitchen-preview" class="shrink-0 h-28 bg-black/40 rounded-xl border border-white/10 shadow-inner flex items-center p-3 gap-3 hidden mt-2">
+                    <div class="w-20 h-20 bg-white/5 rounded-lg flex items-center justify-center shrink-0 relative">
+                        <span id="kitchen-preview-fallback" class="absolute text-3xl opacity-30"></span>
+                        <img id="kitchen-preview-img" src="" class="w-full h-full object-contain z-10 drop-shadow-md" 
+                             onerror="this.style.display='none'; this.previousElementSibling.classList.replace('opacity-30', 'opacity-100');">
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between h-full">
+                        <div>
+                            <div id="kitchen-preview-name" class="font-bold text-sm text-white tracking-wide"></div>
+                            <div id="kitchen-preview-stats" class="text-xs text-green-300 font-medium mt-1"></div>
+                        </div>
+                        <button id="kitchen-preview-btn" class="glass-button !mb-0 highlight-blue w-24 !py-1 text-xs" onclick="">Makan</button>
+                    </div>
+                </div>
             </div>
 
             <div id="view-bathroom" class="glass-panel-main hidden flex-col mb-3">
@@ -152,38 +175,23 @@
                     <span class="glass-section-title m-0">Minimarket</span>
                     <button class="glass-button glass-button-mini !w-auto !mb-0 px-3 py-1" onclick="GAME.logic.closeMinimarket()">Kembali</button>
                 </div>
-                <div id="shop-list" class="overflow-y-auto flex-1 flex flex-col gap-2"></div>
+                <div id="shop-list" class="overflow-y-auto flex-1 grid grid-cols-2 gap-3 pb-2 content-start"></div>
             </div>
 
-            <div id="view-jobs" class="glass-panel-main hidden flex-col mb-3">
-                <div class="flex justify-between items-center mb-3 border-b border-white/20 pb-2">
-                    <span class="glass-section-title m-0">Lowongan Pekerjaan</span>
+            <div id="view-jobs" class="glass-panel-main hidden flex-col mb-3 h-[60vh] w-[85%]">
+                <div class="flex justify-between items-center mb-3 border-b border-white/20 pb-2 shrink-0">
+                    <span class="glass-section-title m-0">Pusat Pekerjaan</span>
                     <button class="glass-button glass-button-mini !w-auto !mb-0 px-3 py-1" onclick="GAME.ui.changeView('view-city')">Kembali</button>
                 </div>
-                <button class="glass-button" onclick="GAME.logic.work('layanan')">
-                    <span class="glass-button-icon">🧹</span>
-                    <div class="glass-button-content">
-                        <span>Layanan Masyarakat</span>
-                        <span class="glass-button-subtext text-gray-300">3 Jam | $30</span>
-                        <span class="glass-button-subtext text-[9px] text-red-300">-50% E, -30% H, +5% C</span>
-                    </div>
-                </button>
-                <button class="glass-button" onclick="GAME.logic.work('kurir')">
-                    <span class="glass-button-icon">📦</span>
-                    <div class="glass-button-content">
-                        <span>Kurir Paket</span>
-                        <span class="glass-button-subtext text-gray-300">4 Jam | $45</span>
-                        <span class="glass-button-subtext text-[9px] text-red-300">-60% E, -40% H, -10% C</span>
-                    </div>
-                </button>
-                <button class="glass-button" onclick="GAME.logic.work('buruh')">
-                    <span class="glass-button-icon">🏭</span>
-                    <div class="glass-button-content">
-                        <span>Buruh Pabrik</span>
-                        <span class="glass-button-subtext text-gray-300">2 Jam | $25</span>
-                        <span class="glass-button-subtext text-[9px] text-red-300">-40% E, -20% H</span>
-                    </div>
-                </button>
+                
+                <div class="flex-1 relative flex items-center justify-center overflow-hidden" id="job-cards-container">
+                    <!-- Cards will be injected by JS -->
+                </div>
+                
+                <div class="shrink-0 flex justify-center gap-6 mt-4 pb-2">
+                    <button class="w-12 h-12 rounded-full bg-black/50 border border-white/10 shadow-lg text-red-500 text-2xl flex items-center justify-center active:scale-90 transition-transform" onclick="GAME.ui.swipeJobLeft()">✕</button>
+                    <button class="w-12 h-12 rounded-full bg-black/50 border border-white/10 shadow-lg text-green-500 text-2xl flex items-center justify-center active:scale-90 transition-transform" onclick="GAME.ui.swipeJobRight()">✓</button>
+                </div>
             </div>
             
             <div id="view-story-location" class="glass-panel-main hidden flex-col text-center justify-center mb-3">
@@ -250,24 +258,7 @@
                 </div>
             </div>
 
-            <div id="view-message" class="glass-panel-main hidden flex-col h-[55vh] w-[85%] mb-3 p-0 overflow-hidden" style="padding: 0;">
-                <div class="flex justify-between items-center bg-black/40 p-3 border-b border-white/20">
-                    <span class="glass-section-title m-0">Messages</span>
-                    <button class="glass-button glass-button-mini !w-auto !mb-0 px-3 py-1" onclick="GAME.logic.closeMessageApp()">Kembali</button>
-                </div>
-                <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
-                    <div class="bg-white/10 rounded-xl p-2 border border-white/10 relative overflow-hidden">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500"></div>
-                        <div class="flex justify-between items-center mb-1.5 pl-2">
-                            <span class="font-bold text-xs text-blue-300">Ibu Kost</span>
-                            <span class="text-[8px] text-gray-400">Day 1</span>
-                        </div>
-                        <p class="text-[10px] text-gray-200 leading-relaxed pl-2">
-                            Jangan lupa, tagihan sewa apartemen bulan ini sudah jatuh tempo. Segera bayar atau kamu harus angkat kaki! ($150)
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
 

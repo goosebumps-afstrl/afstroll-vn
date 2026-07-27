@@ -207,6 +207,9 @@ export const ui = {
       }
 
       if (viewId === "view-minimarket") GAME.ui.renderShop();
+      if (viewId === "view-jobs") {
+          if (GAME.ui.renderJobCards) GAME.ui.renderJobCards();
+      }
       if (viewId === "view-saveload") GAME.ui.renderSaveLoadList();
       if (viewId === "view-saham") GAME.ui.renderSahamList();
 
@@ -273,10 +276,21 @@ export const ui = {
       .querySelectorAll(".hud-text-composure")
       .forEach((el) => (el.innerText = Math.round(stats.composure) + "%"));
 
-    const daytimeStr = `${GAME.constants.timePhases[timePhaseIdx]}, Day ${day}`;
+    const timePhaseStr = GAME.constants.timePhases[timePhaseIdx];
+    const isNight = timePhaseIdx === 0 || timePhaseIdx === 4 || timePhaseIdx === 5;
+    const timeIcon = isNight ? '🌙' : '☀️';
+
     document
-      .querySelectorAll(".hud-ui-daytime")
-      .forEach((el) => (el.innerText = daytimeStr));
+      .querySelectorAll(".hud-ui-daytime-day")
+      .forEach((el) => (el.innerText = `Day ${day}`));
+      
+    document
+      .querySelectorAll(".hud-ui-daytime-phase")
+      .forEach((el) => (el.innerText = timePhaseStr));
+
+    document
+      .querySelectorAll(".hud-ui-daytime-icon")
+      .forEach((el) => (el.innerText = timeIcon));
     document
       .querySelectorAll(".hud-ui-money")
       .forEach((el) => (el.innerText = money));
@@ -288,59 +302,372 @@ export const ui = {
 
     document.getElementById("phone-time").innerText =
       `${dayNameStr}, Day ${day}`;
+    
     GAME.ui.renderPhoneStats();
-
+    
+    // Notifikasi Red Dot
+    const unreadMessages = GAME.state.messages ? GAME.state.messages.filter(m => !m.isRead).length : 0;
+    const dotMain = document.getElementById("phone-notif-dot");
+    const dotApp = document.getElementById("phone-app-message-dot");
+    
+    if (dotMain) {
+        if (unreadMessages > 0) dotMain.classList.remove("hidden");
+        else dotMain.classList.add("hidden");
+    }
+    if (dotApp) {
+        if (unreadMessages > 0) dotApp.classList.remove("hidden");
+        else dotApp.classList.add("hidden");
+    }
+    
     GAME.ui.updateBackground();
   },
 
   renderInventory() {
     const container = document.getElementById("kitchen-inventory");
+    const previewContainer = document.getElementById("kitchen-preview");
     container.innerHTML = "";
+    if(previewContainer) previewContainer.classList.add("hidden");
+    
     let hasItems = false;
-    GAME.constants.shopItems.forEach((item) => {
+    
+    GAME.constants.shopItems.filter(i => i.type === 'food').forEach((item) => {
       let count = GAME.state.inventory[item.id];
       if (count > 0) {
         hasItems = true;
         const el = document.createElement("div");
-        el.className =
-          "flex justify-between items-center bg-white/10 p-2.5 rounded-[16px] border border-white/20 shadow-inner";
+        el.className = "relative bg-black/40 rounded-xl border border-white/10 shadow-lg flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors aspect-square group";
         el.innerHTML = `
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-2xl">${item.icon}</span>
-                                <div>
-                                    <div class="font-bold text-xs tracking-wide">${item.name} <span class="text-blue-300 ml-1">x${count}</span></div>
-                                    <div class="text-[9px] text-gray-300 mt-0.5">+${item.h}% H ${item.e > 0 ? ", +" + item.e + "% E" : ""}</div>
-                                </div>
-                            </div>
-                            <button class="glass-button glass-button-mini !mb-0 highlight-blue" onclick="GAME.logic.useItem('${item.id}')">Pakai</button>
-                        `;
+            <div class="w-full h-full p-2 flex flex-col items-center justify-center relative overflow-hidden">
+                <span class="absolute text-3xl opacity-40 group-hover:opacity-10 transition-opacity">${item.icon || '📦'}</span>
+                <img src="assets/images/item_${item.id}.png" class="w-full h-full object-contain z-10 drop-shadow-md" 
+                     onerror="this.style.display='none'; this.previousElementSibling.classList.replace('opacity-40', 'opacity-100'); this.previousElementSibling.classList.replace('group-hover:opacity-10', 'group-hover:opacity-100');">
+            </div>
+            <div class="absolute top-1 right-1 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-md z-20">x${count}</div>
+        `;
+        
+        el.onclick = () => {
+            if(!previewContainer) return;
+            previewContainer.classList.remove("hidden");
+            const img = document.getElementById("kitchen-preview-img");
+            img.src = `assets/images/item_${item.id}.png`;
+            img.style.display = 'block';
+            document.getElementById("kitchen-preview-fallback").innerText = item.icon || '📦';
+            
+            document.getElementById("kitchen-preview-name").innerText = item.name;
+            
+            const hText = item.h !== 0 ? (item.h > 0 ? `+${item.h} H` : `${item.h} H`) : "";
+            const eText = item.e !== 0 ? (item.e > 0 ? `+${item.e} E` : `${item.e} E`) : "";
+            const sep = hText && eText ? ", " : "";
+            document.getElementById("kitchen-preview-stats").innerText = `${hText}${sep}${eText}`;
+            
+            const btn = document.getElementById("kitchen-preview-btn");
+            btn.onclick = () => {
+                GAME.logic.useItem(item.id);
+            };
+        };
+        
         container.appendChild(el);
       }
     });
-    if (!hasItems)
-      container.innerHTML =
-        '<p class="text-center text-gray-400 mt-10 text-[10px] italic">Kulkas dan lemarimu kosong.</p>';
+    
+    if (!hasItems) {
+      container.innerHTML = '<p class="col-span-4 text-center text-gray-400 mt-10 text-[10px] italic">Kulkas dan lemarimu kosong.</p>';
+    }
+  },
+
+  renderPhoneInventory(filterType = 'food') {
+    const container = document.getElementById("phone-inventory-list");
+    const previewContainer = document.getElementById("phone-inventory-preview");
+    
+    // Update Tab UI
+    document.getElementById("tab-phone-inv-food").classList.remove("highlight-blue", "text-white");
+    document.getElementById("tab-phone-inv-nonfood").classList.remove("highlight-blue", "text-white");
+    document.getElementById("tab-phone-inv-food").classList.add("text-gray-400");
+    document.getElementById("tab-phone-inv-nonfood").classList.add("text-gray-400");
+    
+    if (filterType === 'food') {
+        document.getElementById("tab-phone-inv-food").classList.add("highlight-blue", "text-white");
+        document.getElementById("tab-phone-inv-food").classList.remove("text-gray-400");
+    } else {
+        document.getElementById("tab-phone-inv-nonfood").classList.add("highlight-blue", "text-white");
+        document.getElementById("tab-phone-inv-nonfood").classList.remove("text-gray-400");
+    }
+    
+    container.innerHTML = "";
+    if (previewContainer) previewContainer.classList.add("hidden");
+    
+    let hasItems = false;
+    
+    GAME.constants.shopItems.filter(i => i.type === filterType).forEach((item) => {
+      let count = GAME.state.inventory[item.id];
+      if (count > 0) {
+        hasItems = true;
+        const el = document.createElement("div");
+        el.className = "relative bg-black/40 rounded-xl border border-white/10 shadow-lg flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors aspect-square group";
+        el.innerHTML = `
+            <div class="w-full h-full p-2 flex flex-col items-center justify-center relative overflow-hidden">
+                <span class="absolute text-2xl opacity-40 group-hover:opacity-10 transition-opacity">${item.icon || '📦'}</span>
+                <img src="assets/images/item_${item.id}.png" class="w-full h-full object-contain z-10 drop-shadow-md" 
+                     onerror="this.style.display='none'; this.previousElementSibling.classList.replace('opacity-40', 'opacity-100'); this.previousElementSibling.classList.replace('group-hover:opacity-10', 'group-hover:opacity-100');">
+            </div>
+            <div class="absolute top-1 right-1 bg-blue-500 text-white text-[8px] font-bold px-1 py-0.5 rounded-full shadow-md z-20 leading-none">x${count}</div>
+        `;
+        
+        el.onclick = () => {
+            if(!previewContainer) return;
+            previewContainer.classList.remove("hidden");
+            const img = document.getElementById("phone-inventory-img");
+            img.src = `assets/images/item_${item.id}.png`;
+            img.style.display = 'block';
+            document.getElementById("phone-inventory-fallback").innerText = item.icon || '📦';
+            
+            document.getElementById("phone-inventory-name").innerText = item.name;
+            
+            let statsHtml = "";
+            const btn = document.getElementById("phone-inventory-btn");
+            
+            if (item.type === 'food') {
+                const hText = item.h !== 0 ? (item.h > 0 ? `+${item.h} H` : `${item.h} H`) : "";
+                const eText = item.e !== 0 ? (item.e > 0 ? `+${item.e} E` : `${item.e} E`) : "";
+                const sep = hText && eText ? ", " : "";
+                statsHtml = `${hText}${sep}${eText}`;
+                
+                btn.classList.remove("hidden");
+                btn.onclick = () => {
+                    GAME.logic.useItem(item.id);
+                    GAME.ui.renderPhoneInventory(filterType);
+                };
+            } else {
+                statsHtml = item.desc || "Item Spesial";
+                btn.classList.add("hidden");
+            }
+            document.getElementById("phone-inventory-stats").innerText = statsHtml;
+        };
+        
+        container.appendChild(el);
+      }
+    });
+    
+    if (!hasItems) {
+      container.innerHTML = '<p class="col-span-3 text-center text-gray-400 mt-6 text-[9px] italic">Tidak ada item.</p>';
+    }
   },
 
   renderShop() {
     const container = document.getElementById("shop-list");
     container.innerHTML = "";
+    // Change grid to 3 columns to make items more square-like and less stretched
+    container.className = "overflow-y-auto flex-1 grid grid-cols-3 gap-2 pb-2 content-start";
+    
     GAME.constants.shopItems.forEach((item) => {
       const el = document.createElement("div");
-      el.className =
-        "flex justify-between items-center bg-white/10 p-2.5 rounded-[16px] border border-white/20 shadow-inner";
+      // Square frame design
+      el.className = "relative bg-black/40 p-2 rounded-xl border border-white/10 shadow-lg flex flex-col items-center justify-between overflow-hidden group aspect-square";
+      
+      let statsHtml = "";
+      if (item.type === 'food') {
+          const hText = item.h !== 0 ? (item.h > 0 ? `+${item.h} H` : `${item.h} H`) : "";
+          const eText = item.e !== 0 ? (item.e > 0 ? `+${item.e} E` : `${item.e} E`) : "";
+          const sep = hText && eText ? ", " : "";
+          statsHtml = `<div class="text-[7px] text-green-300 font-medium tracking-wide leading-none mt-1 text-center">${hText}${sep}${eText}</div>`;
+      }
+
       el.innerHTML = `
-                        <div class="flex items-center gap-2.5">
-                            <span class="text-2xl">${item.icon}</span>
-                            <div>
-                                <div class="font-bold text-xs tracking-wide">${item.name} <span class="text-yellow-400 ml-1">$${item.price}</span></div>
-                                <div class="text-[9px] text-gray-300 mt-0.5">+${item.h}% H ${item.e > 0 ? ", +" + item.e + "% E" : ""}</div>
-                            </div>
-                        </div>
-                        <button class="glass-button glass-button-mini !mb-0 highlight-blue" onclick="GAME.logic.buyItem('${item.id}')">Beli</button>
-                    `;
+          <!-- Gambar Item / Fallback -->
+          <div class="w-full h-12 bg-white/5 rounded-lg mb-1 flex items-center justify-center relative overflow-hidden shrink-0">
+              <span class="absolute text-2xl opacity-30 group-hover:opacity-10 transition-opacity">${item.icon || '📦'}</span>
+              <img src="assets/images/item_${item.id}.png" class="w-full h-full object-contain z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-md" 
+                   onerror="this.style.display='none'; this.previousElementSibling.classList.replace('opacity-30', 'opacity-100'); this.previousElementSibling.classList.replace('group-hover:opacity-10', 'group-hover:opacity-100');">
+          </div>
+          
+          <!-- Info Item -->
+          <div class="w-full flex flex-col items-center justify-end flex-1 text-center mt-1">
+              <div class="font-bold text-[9px] tracking-wide text-white leading-tight line-clamp-1 w-full">${item.name}</div>
+              <div class="text-[10px] font-bold text-yellow-400 mt-0.5">$${item.price}</div>
+              ${statsHtml}
+          </div>
+
+          <!-- Tombol Beli Kecil (Kanan Atas) -->
+          <button class="absolute top-1 right-1 w-5 h-5 rounded-full bg-blue-500/80 hover:bg-blue-400 text-white flex items-center justify-center border border-white/20 shadow-md backdrop-blur-sm transition-all active:scale-90 z-20"
+                  onclick="GAME.logic.buyItem('${item.id}')" title="Beli">
+              <span class="text-[10px] font-bold leading-none">+</span>
+          </button>
+      `;
       container.appendChild(el);
     });
+  },
+
+  renderJobCards() {
+    const container = document.getElementById("job-cards-container");
+    if (!container) return;
+    container.innerHTML = "";
+    
+    if (!GAME.ui.currentJobCards) {
+        GAME.ui.currentJobCards = [...GAME.constants.jobList];
+    }
+    
+    const cards = GAME.ui.currentJobCards;
+    
+    // Render top 3 for performance
+    for (let i = Math.min(cards.length - 1, 2); i >= 0; i--) {
+        const job = cards[i];
+        const el = document.createElement("div");
+        el.className = "absolute inset-0 m-auto w-4/5 h-4/5 bg-black/60 backdrop-blur-md rounded-3xl border border-white/20 shadow-xl flex flex-col items-center justify-center p-4 transition-transform duration-300 transform";
+        el.style.zIndex = cards.length - i;
+        
+        const scale = 1 - (i * 0.05);
+        const translateY = i * 15;
+        el.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+        
+        el.innerHTML = `
+            <div class="text-6xl mb-6">${job.icon}</div>
+            <h3 class="text-lg font-bold text-white tracking-wide text-center leading-tight mb-3">${job.title}</h3>
+            <div class="text-sm font-bold text-yellow-400 mb-3">${job.hours} Jam | $${job.pay}</div>
+            <div class="text-[10px] text-red-300 text-center font-medium leading-relaxed bg-red-900/30 px-3 py-1.5 rounded-lg border border-red-500/20">
+                ${job.energy}% E, ${job.hunger}% H
+                ${job.composure !== 0 ? (job.composure > 0 ? ', +'+job.composure+'% C' : ', '+job.composure+'% C') : ''}
+            </div>
+        `;
+        container.appendChild(el);
+    }
+  },
+
+  swipeJobLeft() {
+    if (!GAME.ui.currentJobCards || GAME.ui.currentJobCards.length === 0) return;
+    const container = document.getElementById("job-cards-container");
+    const cards = container.children;
+    if (cards.length === 0) return;
+    
+    const topCard = cards[cards.length - 1]; // DOM order is reversed z-index
+    topCard.style.transform = "translateX(-150%) rotate(-15deg)";
+    topCard.style.opacity = "0";
+    
+    setTimeout(() => {
+        const job = GAME.ui.currentJobCards.shift();
+        GAME.ui.currentJobCards.push(job);
+        GAME.ui.renderJobCards();
+    }, 300);
+  },
+  
+  swipeJobRight() {
+    if (!GAME.ui.currentJobCards || GAME.ui.currentJobCards.length === 0) return;
+    const container = document.getElementById("job-cards-container");
+    const cards = container.children;
+    if (cards.length === 0) return;
+    
+    const topCard = cards[cards.length - 1];
+    topCard.style.transform = "translateX(150%) rotate(15deg)";
+    topCard.style.opacity = "0";
+    
+    const job = GAME.ui.currentJobCards[0];
+    
+    setTimeout(() => {
+        GAME.ui.showToast(`Mengambil pekerjaan ${job.title}...`);
+        GAME.logic.work(job.id);
+    }, 300);
+  },
+
+  renderMessageApp() {
+      const container = document.getElementById("phone-message-list");
+      container.innerHTML = "";
+      
+      if (!GAME.state.messages || GAME.state.messages.length === 0) {
+          container.innerHTML = '<p class="text-center text-gray-400 mt-6 text-[9px] italic">Tidak ada pesan.</p>';
+          return;
+      }
+      
+      GAME.state.messages.forEach(msg => {
+          const el = document.createElement("div");
+          el.className = `p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-colors ${msg.isRead ? 'bg-black/40 border-white/10' : 'bg-white/10 border-blue-400/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]'}`;
+          
+          el.innerHTML = `
+              <div class="relative w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center shrink-0 border border-white/20 overflow-hidden">
+                  <span class="text-white text-xs font-bold z-10">${msg.sender.charAt(0).toUpperCase()}</span>
+                  ${!msg.isRead ? '<div class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-black z-20"></div>' : ''}
+              </div>
+              <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-baseline mb-0.5">
+                      <h4 class="text-[10px] font-bold text-white truncate pr-2">${msg.sender}</h4>
+                      <span class="text-[8px] text-gray-400 shrink-0">Day ${msg.day}</span>
+                  </div>
+                  <p class="text-[9px] text-gray-300 truncate">${msg.text}</p>
+              </div>
+          `;
+          
+          el.onclick = () => GAME.logic.openMessageDetail(msg.id);
+          container.appendChild(el);
+      });
+  },
+
+  renderMessageDetail(msg) {
+      document.getElementById("msg-detail-sender").innerText = msg.sender;
+      document.getElementById("msg-detail-text").innerText = msg.text;
+      
+      const imgSlot = document.getElementById("msg-detail-image-slot");
+      const img = document.getElementById("msg-detail-img");
+      if (msg.img) {
+          imgSlot.classList.remove("hidden");
+          img.src = msg.img;
+      } else {
+          imgSlot.classList.add("hidden");
+      }
+      
+      const actionContainer = document.getElementById("msg-detail-actions");
+      actionContainer.innerHTML = "";
+      
+      if (msg.action && msg.action.type === 'pay_bill') {
+          actionContainer.classList.remove("hidden");
+          const btn = document.createElement("button");
+          btn.className = "glass-button highlight-blue justify-center w-full !mb-0";
+          btn.innerText = `Bayar $${msg.action.amount}`;
+          btn.onclick = () => {
+              GAME.logic.payBill(msg.id, msg.action.amount, msg.action.loanId);
+          };
+          actionContainer.appendChild(btn);
+      } else {
+          actionContainer.classList.add("hidden");
+      }
+  },
+
+  renderPinjolApp() {
+      const container = document.getElementById("phone-pinjol-list");
+      container.innerHTML = "";
+      
+      if (!GAME.state.loans) GAME.state.loans = [];
+      
+      GAME.constants.pinjolOptions.forEach(loan => {
+          const el = document.createElement("div");
+          el.className = "bg-black/60 rounded-xl p-3 border border-red-500/20 shadow-md relative overflow-hidden group";
+          
+          const activeLoan = GAME.state.loans.find(l => l.loanId === loan.id);
+          
+          if (activeLoan) {
+              el.innerHTML = `
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500"></div>
+                  <div class="flex justify-between items-center mb-1 pl-2">
+                      <h4 class="text-xs font-bold text-white">$${loan.amount}</h4>
+                      <span class="text-[8px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-300 rounded border border-yellow-500/30">AKTIF</span>
+                  </div>
+                  <div class="text-[9px] text-gray-300 mb-2 pl-2">
+                      Sisa Tenor: ${activeLoan.maxTenor - activeLoan.paidTenor}x<br>
+                      Tagihan Berikut: $${activeLoan.billAmount} dalam ${activeLoan.daysUntilNextBill} Hari
+                  </div>
+              `;
+          } else {
+              el.innerHTML = `
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>
+                  <div class="flex justify-between items-center mb-1 pl-2">
+                      <h4 class="text-xs font-bold text-white">$${loan.amount}</h4>
+                  </div>
+                  <div class="text-[9px] text-gray-300 mb-2 pl-2">
+                      Cicilan: $${loan.billAmount} per ${loan.billInterval} hari<br>
+                      Tenor: ${loan.maxTenor}x bayar
+                  </div>
+                  <button class="glass-button glass-button-mini w-full !mb-0 bg-green-600/30 text-green-100 border-green-500/50 hover:bg-green-600/50" onclick="GAME.logic.borrowPinjol('${loan.id}')">Ajukan Sekarang</button>
+              `;
+          }
+          container.appendChild(el);
+      });
   },
 
   renderSaveLoadList() {

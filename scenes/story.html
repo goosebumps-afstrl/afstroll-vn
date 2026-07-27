@@ -11,7 +11,7 @@
         <div id="story-choices-container" class="absolute bottom-20 left-5 z-40 w-[85%] max-w-[280px] flex flex-col items-start gap-2 pointer-events-auto hidden">
         </div>
 
-        <div class="absolute top-0 left-0 w-full p-3 flex justify-between items-start z-30 pointer-events-none transition-opacity duration-500" id="story-hud-top">
+        <div class="w-full p-3 flex justify-between items-start z-30 pointer-events-none absolute top-0 left-0 transition-opacity duration-500" id="story-hud-top">
             <div class="glass-hud flex flex-col gap-2 w-28 pointer-events-auto">
                 <div>
                     <div class="flex justify-between text-[8px] font-medium text-gray-200 mb-0.5">
@@ -32,20 +32,27 @@
                     <div class="hud-bar"><div class="hud-fill fill-composure hud-bar-composure" style="width: 75%"></div></div>
                 </div>
             </div>
+        </div>
 
-            <div class="flex flex-col items-end gap-2 pointer-events-auto">
-                <div class="glass-hud !p-0 flex items-stretch rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-500/40 to-indigo-500/40 px-2.5 py-1.5 flex items-center justify-center border-r border-white/20">
-                        <span class="text-[9px] font-bold text-white uppercase tracking-widest hud-ui-dayname drop-shadow-md">SENIN</span>
-                    </div>
-                    <div class="px-3 py-1.5 flex items-center justify-center bg-black/20">
-                        <span class="text-[10px] font-semibold text-green-400 tracking-wide hud-ui-daytime">Malam, Day 0</span>
-                    </div>
-                </div>
-                <div class="glass-hud px-3 py-1.5 flex items-center gap-1.5 rounded-full">
-                    <span class="text-yellow-500 font-bold text-xs">$</span>
-                    <span class="text-xs font-bold text-white tracking-wide hud-ui-money">150</span>
-                </div>
+        <!-- NEW CIRCLE HUD TOP RIGHT (Story Mode) -->
+        <div class="absolute top-[-50px] right-[-15px] w-[200px] h-[200px] rounded-full z-30 pointer-events-none flex flex-col items-end justify-center pr-8 pt-10 shadow-2xl transition-opacity duration-500" id="story-hud-circle"
+             style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="flex items-center gap-1 text-white mb-1.5">
+                <span class="text-xs font-light tracking-wide hud-ui-dayname">Senin</span>
+                <span class="text-xs font-light">|</span>
+                <span class="text-xs font-light tracking-wide hud-ui-daytime-day">Day 0</span>
+            </div>
+            
+            <div class="w-20 h-[1px] bg-white/20 mb-1.5"></div>
+
+            <div class="flex items-center gap-1.5 mb-2 text-right">
+                <span class="text-[10px] font-medium text-gray-200 tracking-wide hud-ui-daytime-phase">Tengah Malam</span>
+                <span class="text-sm hud-ui-daytime-icon">🌙</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-right">
+                <span class="text-[7px] font-bold text-gray-400 tracking-widest uppercase mt-0.5">Wallet</span>
+                <span class="text-xs font-bold text-green-400 tracking-wider"><span class="text-green-500/80 mr-0.5">$</span><span class="hud-ui-money">150</span></span>
             </div>
         </div>
 

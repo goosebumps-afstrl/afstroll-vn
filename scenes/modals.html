@@ -26,12 +26,12 @@
                         <span class="text-xl m-0">📈</span> <span class="font-medium text-[9px]">Saham</span>
                     </button>
                     <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openMessageApp()">
-                        <span class="text-xl m-0 flex items-center justify-center relative">💬<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black"></span></span> <span class="font-medium text-[9px]">Message</span>
+                        <span class="text-xl m-0 flex items-center justify-center relative">💬<span id="phone-app-message-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-black hidden"></span></span> <span class="font-medium text-[9px]">Message</span>
                     </button>
                     <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openInventoryFromPhone()">
                         <span class="text-xl m-0">🎒</span> <span class="font-medium text-[9px]">Item</span>
                     </button>
-                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.ui.showToast('Pinjol feature in development')">
+                    <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.logic.openPinjolApp()">
                         <span class="text-xl m-0">💸</span> <span class="font-medium text-[9px]">Pinjol</span>
                     </button>
                     <button class="glass-button flex-col items-center text-center gap-1.5 !p-2.5 !rounded-2xl" onclick="GAME.ui.showToast('Online Shop feature in development')">
@@ -102,6 +102,94 @@
             <div class="flex gap-2">
                 <button class="flex-1 glass-button justify-center" onclick="GAME.ui.toggleModal('modal-confirm-overwrite')">Batal</button>
                 <button id="confirm-overwrite-btn" class="flex-1 glass-button highlight justify-center" onclick="GAME.logic.confirmOverwrite()">Ya, Timpa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHONE INVENTORY MODAL -->
+    <div id="modal-phone-inventory" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
+            <div class="bg-black/40 p-3 pb-2 text-center border-b border-white/10 shrink-0">
+                <h3 class="text-xs font-bold text-white tracking-widest uppercase">Inventory</h3>
+                <div class="flex gap-2 mt-2">
+                    <button id="tab-phone-inv-food" class="flex-1 glass-button glass-button-mini !mb-0 highlight-blue text-[9px]" onclick="GAME.ui.renderPhoneInventory('food')">Makanan</button>
+                    <button id="tab-phone-inv-nonfood" class="flex-1 glass-button glass-button-mini !mb-0 text-[9px]" onclick="GAME.ui.renderPhoneInventory('non-food')">Lainnya</button>
+                </div>
+            </div>
+            
+            <div id="phone-inventory-list" class="overflow-y-auto flex-1 grid grid-cols-3 gap-2 content-start p-3"></div>
+
+            <div id="phone-inventory-preview" class="shrink-0 h-28 bg-black/60 border-t border-white/10 flex items-center p-2 gap-2 hidden">
+                <div class="w-16 h-16 bg-white/5 rounded-lg flex items-center justify-center shrink-0 relative">
+                    <span id="phone-inventory-fallback" class="absolute text-2xl opacity-30"></span>
+                    <img id="phone-inventory-img" src="" class="w-full h-full object-contain z-10 drop-shadow-md" 
+                         onerror="this.style.display='none'; this.previousElementSibling.classList.replace('opacity-30', 'opacity-100');">
+                </div>
+                <div class="flex-1 flex flex-col justify-between h-full py-1">
+                    <div>
+                        <div id="phone-inventory-name" class="font-bold text-[10px] text-white tracking-wide leading-tight"></div>
+                        <div id="phone-inventory-stats" class="text-[8px] text-gray-300 mt-1 leading-tight"></div>
+                    </div>
+                    <button id="phone-inventory-btn" class="glass-button glass-button-mini !mb-0 highlight-blue w-full hidden" onclick="">Gunakan</button>
+                </div>
+            </div>
+
+            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-white/10">
+                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-inventory')" aria-label="Kembali">
+                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PHONE MESSAGE MODAL -->
+    <div id="modal-phone-message" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
+            <div class="bg-black/40 p-3 pb-2 text-center border-b border-white/10 shrink-0">
+                <h3 class="text-xs font-bold text-white tracking-widest uppercase">Messages</h3>
+            </div>
+            <div id="phone-message-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-2"></div>
+            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-white/10">
+                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-message')" aria-label="Kembali">
+                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHONE MESSAGE DETAIL MODAL -->
+    <div id="modal-message-detail" class="absolute inset-0 bg-black/60 z-[60] hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
+            <div class="bg-black/40 p-3 pb-2 flex items-center border-b border-white/10 shrink-0">
+                <button class="text-white mr-2" onclick="GAME.ui.toggleModal('modal-message-detail')">&#9664;</button>
+                <h3 id="msg-detail-sender" class="text-xs font-bold text-white tracking-widest uppercase flex-1 text-center pr-4">Sender</h3>
+            </div>
+            <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
+                <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                    <p id="msg-detail-text" class="text-[10px] text-gray-200 leading-relaxed whitespace-pre-wrap"></p>
+                    <div id="msg-detail-image-slot" class="w-full mt-3 rounded-lg overflow-hidden border border-white/10 hidden">
+                        <img id="msg-detail-img" src="" class="w-full h-auto object-cover">
+                    </div>
+                </div>
+                <div id="msg-detail-actions" class="w-full hidden">
+                    <!-- Actions like Pay Bill will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHONE PINJOL MODAL -->
+    <div id="modal-phone-pinjol" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
+            <div class="bg-red-900/40 p-3 pb-2 text-center border-b border-red-500/20 shrink-0">
+                <h3 class="text-xs font-bold text-red-100 tracking-widest uppercase">Pinjol Cepat</h3>
+                <p class="text-[8px] text-red-300">Solusi Instan Keuangan Anda</p>
+            </div>
+            <div id="phone-pinjol-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-2"></div>
+            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-red-500/20">
+                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-pinjol')" aria-label="Kembali">
+                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
+                </button>
             </div>
         </div>
     </div>

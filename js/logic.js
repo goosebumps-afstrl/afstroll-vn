@@ -565,10 +565,12 @@ export const logic = {
     const sequence = this.storyState.sequence;
 
     if (!sequence || stepIdx >= sequence.length) {
-      if (typeof this.storyState.onComplete === "function") {
-        this.storyState.onComplete();
-      }
+      const onCompleteCb = this.storyState.onComplete;
       this.storyState.sequence = null;
+      this.storyState.onComplete = null;
+      if (typeof onCompleteCb === "function") {
+        onCompleteCb();
+      }
       return;
     }
 
@@ -833,7 +835,7 @@ export const logic = {
       GAME.state.currentStorySeq = seqName;
     }
     const seq = typeof seqName === "string" ? GAME.logic[seqName]() : seqName;
-    GAME.logic.startStory(seq, onComplete || GAME.logic.storyState.onComplete);
+    GAME.logic.startStory(seq, onComplete);
   },
 
   startStory2Interactive() {
@@ -2469,6 +2471,11 @@ export const logic = {
         el.style.pointerEvents = (el.id === "dynamic-content" || el.id === "global-bottom-ui") ? "none" : "";
       }
     });
+
+    const wrapper = document.getElementById("view-apartment");
+    if (wrapper && !wrapper.classList.contains("minimized")) {
+      GAME.logic.toggleApartmentView();
+    }
   },
 
   triggerGameOver() {
@@ -2513,8 +2520,27 @@ export const logic = {
 
   advanceTime(phases) {
     let totalPhases = GAME.state.timePhaseIdx + phases;
-    GAME.state.day += Math.floor(totalPhases / 6);
+    const daysPassed = Math.floor(totalPhases / 6);
+    GAME.state.day += daysPassed;
     GAME.state.timePhaseIdx = totalPhases % 6;
+    
+    // Daily Pinjol Update
+    if (daysPassed > 0 && GAME.state.loans) {
+        GAME.state.loans.forEach(loan => {
+            loan.daysUntilNextBill -= daysPassed;
+            if (loan.daysUntilNextBill <= 0) {
+                GAME.logic.addMessage({
+                    sender: "Greg",
+                    text: `Waktunya bayar hutangmu! Segera bayar cicilan $${loan.billAmount} dari pinjaman $${loan.amount} sekarang juga, atau aku akan datang mencarimu!`,
+                    day: GAME.state.day,
+                    action: { type: 'pay_bill', amount: loan.billAmount, loanId: loan.id },
+                    img: "assets/images/Greg_0Z0hutang02.png"
+                });
+                loan.daysUntilNextBill = loan.billInterval; 
+            }
+        });
+    }
+
     for (let i = 0; i < phases; i++) {
       this.updateStockPrices();
     }
@@ -2579,48 +2605,31 @@ export const logic = {
     });
   },
 
-  work(jobType) {
-    let eCost = 0,
-      hCost = 0,
-      timeCost = 0,
-      cGain = 0,
-      income = 0,
-      jobName = "";
-    if (jobType === "pelayanan") {
-      eCost = 30;
-      hCost = 15;
-      timeCost = 3;
-      cGain = 2;
-      income = 120;
-      jobName = "Pelayanan Masyarakat";
-    }
-    if (jobType === "buruh") {
-      eCost = 35;
-      hCost = 15;
-      timeCost = 3;
-      income = 150;
-      jobName = "Buruh Pabrik";
-    }
-    if (jobType === "kurir") {
-      eCost = 20;
-      hCost = 10;
-      timeCost = 2;
-      income = 80;
-      jobName = "Kurir Antar";
+  work(jobId) {
+    const job = GAME.constants.jobList.find(j => j.id === jobId);
+    if (!job) {
+        GAME.ui.showToast("Pekerjaan tidak ditemukan.");
+        return;
     }
 
-    if (GAME.state.stats.energy < eCost) {
-      GAME.ui.showToast("❌ Energi tidak cukup untuk bekerja!");
+    if (GAME.state.stats.energy < Math.abs(job.energy)) {
+      GAME.ui.showToast("Energy tidak cukup untuk bekerja!");
+      GAME.ui.renderJobCards(); // Put card back
       return;
     }
+
     this.performTransition(() => {
-      GAME.state.stats.energy -= eCost;
-      GAME.state.stats.hunger -= hCost;
-      GAME.state.stats.composure += cGain;
-      GAME.state.money += income;
-      GAME.logic.advanceTime(timeCost);
-      GAME.ui.showToast(`${jobName} selesai. Mendapat $${income}`);
-      GAME.ui.changeView("view-city", false);
+      GAME.state.stats.energy += job.energy;
+      GAME.state.stats.hunger += job.hunger;
+      if (job.composure) GAME.state.stats.composure += job.composure;
+      
+      GAME.state.money += job.pay;
+      GAME.logic.advanceTime(job.hours);
+      
+      GAME.ui.showToast(`Bekerja sebagai ${job.title} menghasilkan $${job.pay}.`);
+      this.saveGame("autosave");
+      
+      GAME.ui.renderJobCards();
     });
   },
 
@@ -2971,6 +2980,114 @@ export const logic = {
     });
   },
 
+  openInventoryFromPhone() {
+    GAME.ui.toggleModal('modal-phone');
+    GAME.ui.renderPhoneInventory('food');
+    GAME.ui.toggleModal('modal-phone-inventory');
+  },
+
+  openPinjolApp() {
+    GAME.ui.toggleModal('modal-phone');
+    GAME.ui.renderPinjolApp();
+    GAME.ui.toggleModal('modal-phone-pinjol');
+  },
+
+  borrowPinjol(loanId) {
+    const loan = GAME.constants.pinjolOptions.find(l => l.id === loanId);
+    if (!loan) return;
+    
+    if (confirm(`Ajukan pinjaman sebesar $${loan.amount} dengan cicilan $${loan.billAmount}/${loan.billInterval} hari selama ${loan.maxTenor}x?`)) {
+        GAME.state.money += loan.amount;
+        GAME.state.loans.push({
+            id: 'loan_' + Date.now(),
+            loanId: loan.id,
+            amount: loan.amount,
+            billAmount: loan.billAmount,
+            maxTenor: loan.maxTenor,
+            paidTenor: 0,
+            daysUntilNextBill: loan.billInterval,
+            billInterval: loan.billInterval
+        });
+        
+        GAME.ui.showToast(`Pinjaman $${loan.amount} cair ke rekening Anda!`);
+        GAME.logic.addMessage({
+            sender: "Greg",
+            text: `Terima kasih telah menggunakan layanan Pinjol Cepat. Pinjaman $${loan.amount} Anda telah cair. Jangan telat bayar cicilan $${loan.billAmount} dalam ${loan.billInterval} hari, atau Anda berurusan dengan saya!`,
+            day: GAME.state.day,
+            action: null,
+            img: "assets/images/Greg_0Z0hutang01.png"
+        });
+        
+        GAME.ui.renderPinjolApp();
+        GAME.ui.updateStats();
+    }
+  },
+
+  openMessageApp() {
+    GAME.ui.toggleModal('modal-phone');
+    GAME.ui.renderMessageApp();
+    GAME.ui.toggleModal('modal-phone-message');
+  },
+  
+  openMessageDetail(msgId) {
+    const msg = GAME.state.messages.find(m => m.id === msgId);
+    if (!msg) return;
+    msg.isRead = true;
+    GAME.ui.renderMessageApp();
+    GAME.ui.updateStats();
+    GAME.ui.renderMessageDetail(msg);
+    GAME.ui.toggleModal('modal-message-detail');
+  },
+  
+  payBill(msgId, amount, loanId) {
+      if (GAME.state.money < amount) {
+          GAME.ui.showToast("Uang Anda tidak cukup untuk membayar tagihan ini!");
+          return;
+      }
+      
+      GAME.state.money -= amount;
+      
+      if (loanId) {
+          const loan = GAME.state.loans.find(l => l.id === loanId);
+          if (loan) {
+              loan.paidTenor++;
+              loan.daysUntilNextBill = loan.billInterval;
+              GAME.ui.showToast(`Cicilan ke-${loan.paidTenor} sebesar $${amount} berhasil dibayar.`);
+              
+              if (loan.paidTenor >= loan.maxTenor) {
+                  GAME.state.loans = GAME.state.loans.filter(l => l.id !== loanId);
+                  GAME.ui.showToast("Pinjaman telah lunas!");
+              }
+          }
+      } else {
+          GAME.ui.showToast(`Tagihan sebesar $${amount} berhasil dibayar.`);
+      }
+      
+      const msg = GAME.state.messages.find(m => m.id === msgId);
+      if (msg) {
+          msg.action = null;
+      }
+      
+      GAME.ui.updateStats();
+      GAME.ui.toggleModal('modal-message-detail');
+  },
+
+  addMessage(msgData) {
+      if (!GAME.state.messages) GAME.state.messages = [];
+      const newMsg = {
+          id: 'msg_' + Date.now() + Math.floor(Math.random() * 1000),
+          sender: msgData.sender || "Unknown",
+          text: msgData.text || "",
+          day: msgData.day || GAME.state.day,
+          isRead: false,
+          action: msgData.action || null,
+          img: msgData.img || null
+      };
+      // Put at the beginning
+      GAME.state.messages.unshift(newMsg);
+      GAME.ui.updateStats();
+  },
+
   openSahamApp() {
     const activeDynamicView = document.querySelector(
       "#dynamic-content > div:not(.hidden):not(#door-exit-area)",
@@ -3123,16 +3240,6 @@ export const logic = {
     }
   },
 
-  openInventoryFromPhone() {
-    const activeDynamicView = document.querySelector(
-      "#dynamic-content > div:not(.hidden):not(#door-exit-area)",
-    );
-    if (activeDynamicView) {
-      GAME.state.previousView = activeDynamicView.id;
-    }
-    GAME.ui.toggleModal("modal-phone");
-    GAME.ui.changeView("view-kitchen", false);
-  },
 
   closeInventory() {
     if (GAME.state.previousView) {

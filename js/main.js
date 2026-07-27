@@ -168,8 +168,10 @@ function setupEventListeners() {
                     GAME.ui.changeView('view-apartment', false);
                 } else if (view === 'view-kitchen') {
                     GAME.logic.closeInventory();
-                } else if (view === 'view-minimarket' || view === 'view-jobs' || view === 'view-story-location') {
+                } else if (view === 'view-minimarket' || view === 'view-story-location') {
                     GAME.ui.changeView('view-city');
+                } else if (view === 'view-jobs') {
+                    GAME.ui.swipeJobLeft();
                 } else if (view === 'view-saham') {
                     GAME.logic.closeSahamApp();
                 } else if (view === 'view-saham-detail') {
@@ -177,6 +179,11 @@ function setupEventListeners() {
                 } else if (view === 'view-message') {
                     GAME.logic.closeMessageApp();
                 }
+            }
+        } else if (isHorizontal && diffX > 40) {
+            if (isPhoneOpen) return;
+            if (GAME.state.currentView === 'view-jobs') {
+                GAME.ui.swipeJobRight();
             }
         }
 
@@ -326,4 +333,8 @@ function setupEventListeners() {
 }
 
 // Eksekusi fungsi initGame() ketika seluruh dokumen awal siap
-document.addEventListener('DOMContentLoaded', initGame);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+} else {
+    initGame();
+}
