@@ -3219,26 +3219,6 @@ export const logic = {
   // ==========================================
   // LOGIC APLIKASI HP & INVENTORY
   // ==========================================
-  openMessageApp() {
-    const activeDynamicView = document.querySelector(
-      "#dynamic-content > div:not(.hidden):not(#door-exit-area)",
-    );
-    if (activeDynamicView) {
-      GAME.state.previousView = activeDynamicView.id;
-    }
-    GAME.ui.toggleModal("modal-phone");
-    GAME.ui.changeView("view-message", false);
-  },
-
-  closeMessageApp() {
-    if (GAME.state.previousView) {
-      GAME.ui.changeView(GAME.state.previousView, false);
-      GAME.ui.toggleModal("modal-phone");
-      GAME.state.previousView = null;
-    } else {
-      GAME.ui.changeView("view-apartment", false);
-    }
-  },
 
 
   closeInventory() {

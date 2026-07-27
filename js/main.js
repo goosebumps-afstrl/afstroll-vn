@@ -176,8 +176,6 @@ function setupEventListeners() {
                     GAME.logic.closeSahamApp();
                 } else if (view === 'view-saham-detail') {
                     GAME.ui.changeView('view-saham', false);
-                } else if (view === 'view-message') {
-                    GAME.logic.closeMessageApp();
                 }
             }
         } else if (isHorizontal && diffX > 40) {
