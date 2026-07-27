@@ -3019,7 +3019,7 @@ export const logic = {
         });
         
         GAME.ui.renderPinjolApp();
-        GAME.ui.updateStats();
+        GAME.ui.updateHUD();
     }
   },
 
@@ -3034,7 +3034,7 @@ export const logic = {
     if (!msg) return;
     msg.isRead = true;
     GAME.ui.renderMessageApp();
-    GAME.ui.updateStats();
+    GAME.ui.updateHUD();
     GAME.ui.renderMessageDetail(msg);
     GAME.ui.toggleModal('modal-message-detail');
   },
@@ -3068,7 +3068,7 @@ export const logic = {
           msg.action = null;
       }
       
-      GAME.ui.updateStats();
+      GAME.ui.updateHUD();
       GAME.ui.toggleModal('modal-message-detail');
   },
 
@@ -3085,7 +3085,7 @@ export const logic = {
       };
       // Put at the beginning
       GAME.state.messages.unshift(newMsg);
-      GAME.ui.updateStats();
+      GAME.ui.updateHUD();
   },
 
   openSahamApp() {
