@@ -1,4 +1,14 @@
 export const ui = {
+  showConfirm(title, message, onConfirm) {
+      document.getElementById('general-confirm-title').innerText = title;
+      document.getElementById('general-confirm-text').innerText = message;
+      document.getElementById('general-confirm-btn').onclick = () => {
+          GAME.ui.toggleModal('modal-general-confirm');
+          onConfirm();
+      };
+      GAME.ui.toggleModal('modal-general-confirm');
+  },
+
   showToast(msg) {
     const isComposureWarning = msg.startsWith("⚠️");
     if (!isComposureWarning && GAME.state.stats.composure <= 20) {

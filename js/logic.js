@@ -2995,32 +2995,34 @@ export const logic = {
   borrowPinjol(loanId) {
     const loan = GAME.constants.pinjolOptions.find(l => l.id === loanId);
     if (!loan) return;
-    
-    if (confirm(`Ajukan pinjaman sebesar $${loan.amount} dengan cicilan $${loan.billAmount}/${loan.billInterval} hari selama ${loan.maxTenor}x?`)) {
-        GAME.state.money += loan.amount;
-        GAME.state.loans.push({
-            id: 'loan_' + Date.now(),
-            loanId: loan.id,
-            amount: loan.amount,
-            billAmount: loan.billAmount,
-            maxTenor: loan.maxTenor,
-            paidTenor: 0,
-            daysUntilNextBill: loan.billInterval,
-            billInterval: loan.billInterval
-        });
-        
-        GAME.ui.showToast(`Pinjaman $${loan.amount} cair ke rekening Anda!`);
-        GAME.logic.addMessage({
-            sender: "Greg",
-            text: `Terima kasih telah menggunakan layanan Pinjol Cepat. Pinjaman $${loan.amount} Anda telah cair. Jangan telat bayar cicilan $${loan.billAmount} dalam ${loan.billInterval} hari, atau Anda berurusan dengan saya!`,
-            day: GAME.state.day,
-            action: null,
-            img: "assets/images/Greg_0Z0hutang01.png"
-        });
-        
-        GAME.ui.renderPinjolApp();
-        GAME.ui.updateHUD();
-    }
+    GAME.ui.showConfirm(
+        "Konfirmasi Pinjaman",
+        `Ajukan pinjaman sebesar $${loan.amount} dengan cicilan $${loan.billAmount}/${loan.billInterval} hari selama ${loan.maxTenor}x?`,
+        () => {
+            GAME.state.money += loan.amount;
+            GAME.state.loans.push({
+                id: 'loan_' + Date.now(),
+                loanId: loan.id,
+                amount: loan.amount,
+                billAmount: loan.billAmount,
+                billInterval: loan.billInterval,
+                daysUntilNextBill: loan.billInterval,
+                paidTenor: 0,
+                maxTenor: loan.maxTenor
+            });
+            
+            GAME.logic.addMessage({
+                sender: "Greg",
+                text: `Terima kasih telah menggunakan layanan Pinjol Cepat. Pinjaman $${loan.amount} Anda telah cair. Jangan telat bayar cicilan $${loan.billAmount} dalam ${loan.billInterval} hari, atau Anda berurusan dengan saya!`,
+                day: GAME.state.day,
+                action: null,
+                img: "assets/images/Greg_0Z0hutang01.png"
+            });
+            
+            GAME.ui.renderPinjolApp();
+            GAME.ui.updateHUD();
+        }
+    );
   },
 
   openMessageApp() {

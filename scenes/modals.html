@@ -95,6 +95,17 @@
         </div>
     </div>
 
+    <div id="modal-general-confirm" class="absolute inset-0 bg-black/70 z-[70] hidden flex-col items-center justify-center p-4 backdrop-blur-lg">
+        <div class="glass-panel-main w-full flex flex-col gap-3 p-4 text-center">
+            <h2 id="general-confirm-title" class="text-sm font-bold text-white uppercase tracking-wider">Konfirmasi</h2>
+            <p id="general-confirm-text" class="text-[10px] text-gray-200 font-light leading-relaxed mb-3">Apakah Anda yakin?</p>
+            <div class="flex gap-2">
+                <button class="flex-1 glass-button justify-center" onclick="GAME.ui.toggleModal('modal-general-confirm')">Batal</button>
+                <button id="general-confirm-btn" class="flex-1 glass-button highlight justify-center" onclick="">Ya</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-confirm-overwrite" class="absolute inset-0 bg-black/70 z-[60] hidden flex-col items-center justify-center p-4 backdrop-blur-lg">
         <div class="glass-panel-main w-full flex flex-col gap-3 p-4 text-center">
             <h2 class="text-sm font-bold text-white uppercase tracking-wider">Timpa Save Data?</h2>
@@ -109,8 +120,11 @@
     <!-- PHONE INVENTORY MODAL -->
     <div id="modal-phone-inventory" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
         <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
-            <div class="bg-black/40 p-3 pb-2 text-center border-b border-white/10 shrink-0">
-                <h3 class="text-xs font-bold text-white tracking-widest uppercase">Inventory</h3>
+            <div class="bg-black/40 p-3 pb-2 flex flex-col border-b border-white/10 shrink-0">
+                <div class="flex items-center w-full">
+                    <button class="text-white mr-2" onclick="GAME.ui.toggleModal('modal-phone-inventory'); GAME.ui.toggleModal('modal-phone')">&#9664;</button>
+                    <h3 class="text-xs font-bold text-white tracking-widest uppercase flex-1 text-center pr-4">Inventory</h3>
+                </div>
                 <div class="flex gap-2 mt-2">
                     <button id="tab-phone-inv-food" class="flex-1 glass-button glass-button-mini !mb-0 highlight-blue text-[9px]" onclick="GAME.ui.renderPhoneInventory('food')">Makanan</button>
                     <button id="tab-phone-inv-nonfood" class="flex-1 glass-button glass-button-mini !mb-0 text-[9px]" onclick="GAME.ui.renderPhoneInventory('non-food')">Lainnya</button>
@@ -132,12 +146,6 @@
                     </div>
                     <button id="phone-inventory-btn" class="glass-button glass-button-mini !mb-0 highlight-blue w-full hidden" onclick="">Gunakan</button>
                 </div>
-            </div>
-
-            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-white/10">
-                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-inventory'); GAME.ui.toggleModal('modal-phone')" aria-label="Kembali">
-                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
-                </button>
             </div>
         </div>
     </div>
@@ -177,15 +185,13 @@
     <!-- PHONE PINJOL MODAL -->
     <div id="modal-phone-pinjol" class="absolute inset-0 bg-black/60 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity">
         <div class="glass-panel-main w-full max-w-[240px] h-[75vh] flex flex-col relative p-0 overflow-hidden" style="border-radius: 30px;">
-            <div class="bg-red-900/40 p-3 pb-2 text-center border-b border-red-500/20 shrink-0">
-                <h3 class="text-xs font-bold text-red-100 tracking-widest uppercase">Pinjol Cepat</h3>
-                <p class="text-[8px] text-red-300">Solusi Instan Keuangan Anda</p>
+            <div class="bg-red-900/40 p-3 pb-2 flex items-center border-b border-red-500/20 shrink-0">
+                <button class="text-red-100 mr-2" onclick="GAME.ui.toggleModal('modal-phone-pinjol'); GAME.ui.toggleModal('modal-phone')">&#9664;</button>
+                <div class="flex-1 text-center pr-4">
+                    <h3 class="text-xs font-bold text-red-100 tracking-widest uppercase">Pinjol Cepat</h3>
+                    <p class="text-[8px] text-red-300">Solusi Instan Keuangan Anda</p>
+                </div>
             </div>
             <div id="phone-pinjol-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-2"></div>
-            <div class="shrink-0 p-2 flex justify-center bg-black/40 border-t border-red-500/20">
-                <button class="glass-button glass-button-mini !w-12 !h-8 justify-center !mb-0" onclick="GAME.ui.toggleModal('modal-phone-pinjol'); GAME.ui.toggleModal('modal-phone')" aria-label="Kembali">
-                    <div class="w-6 h-1 bg-white/50 rounded-full"></div>
-                </button>
-            </div>
         </div>
     </div>
