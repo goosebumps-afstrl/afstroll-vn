@@ -12,7 +12,7 @@ export const chloePhase01Story = {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "kayanya temen sean buat masalah lagi di bar",
+        text: "Kayanya temen sean buat masalah lagi",
       },
       {
         type: "image",
@@ -25,24 +25,24 @@ export const chloePhase01Story = {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "{name}, sekarang apa yang kamu rasa?",
+        text: "Ada apa {name}?" "Kamu keliatan bingung" "Kamu baik-baik aja?",
       },
       {
         type: "choice",
         choices: [
           {
-            text: "kepalaku agak sedikit pusing",
+            text: "Aku baik-baik aja Chloe",
             stats: { heart_chloe: 1 },
             next: "seq_3_chloe_branch1_pusing",
           },
           {
-            text: "sedikit lemas, tapi aku akan baik-baik saja setelah istirahat ini",
-            stats: { heart_chloe: 5, cha: 2, wis: 3 },
+            text: "Aku cuma kelelahan Chloe",
+            stats: { heart_chloe: 2, cha: 1, wis: 1 },
             next: "seq_3_chloe_branch1_pusing",
           },
           {
-            text: "aku rasa aku jatuh cinta padamu chloe",
-            stats: { heart_chloe: 5, cha: 5, wis: -5 },
+            text: "Apakah Sean itu pacar kamu?",
+            stats: { heart_chloe: 5, cha: 2, wis: -2 },
             next: "seq_3_chloe_branch1_cinta",
           },
         ],
@@ -63,13 +63,13 @@ export const chloePhase01Story = {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "iya kamu memang butuh istirahat",
+        text: "Jangan memaksakan diri {name}",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "nanti jangan memaksakan diri lagi ya!",
+        text: "Seengganya kamu harus istirahat dulu",
       },
       {
         type: "action",
@@ -82,7 +82,7 @@ export const chloePhase01Story = {
     return [
       {
         type: "image",
-        src: "assets/images/0003_intro03chloe.jpg",
+        src: "assets/images/0003_intro04chloehug01.jpg",
         effect: "cross-dissolve",
         wait: 500,
         skippable: false,
@@ -91,13 +91,13 @@ export const chloePhase01Story = {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "sepertinya kepala kamu terbentur keras saat pingsan",
+        text: "Hah? Kenapa kamu bisa nanya gitu?",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "istirahatlah {name}",
+        text: "Ini aneh {name}" "Kamu serius ga apa-apa kan?",
       },
       {
         type: "action",
@@ -110,7 +110,7 @@ export const chloePhase01Story = {
     return [
       {
         type: "image",
-        src: "assets/images/0003_intro03chloe.jpg",
+        src: "assets/images/0003_intro04chloehug01.jpg",
         effect: "cross-dissolve",
         wait: 500,
         skippable: false,
@@ -119,15 +119,16 @@ export const chloePhase01Story = {
         type: "choice",
         choices: [
           {
-            text: "chloe apa kamu dan sean berpacaran?",
-            stats: { heart_chloe: -1, cha: -1, wis: -1 },
+            text: "aku baik-baik aja Chloe",
+            stats: { heart_chloe: -2, cha: -2, wis: -3 },
             next: "seq_3_chloe_intro04",
           },
           {
             text: "chloe berikan aku pelukan sebentar",
             stats: { heart_chloe: 5, cha: 5, wis: -1 },
-            next: "seq_3_chloe_hug",
+            next: "seq_3_chloe_intro04",
           },
+          seq_3_chloe_hug
           {
             text: "chloe bibirmu indah sekali",
             stats: { heart_chloe: -1, cha: 5, wis: -5 },

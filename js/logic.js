@@ -121,25 +121,25 @@ export const logic = {
         type: "dialogue",
         retainMedia: true,
         name: "Sean",
-        text: "Chloe!! kamu menumpahkan semua kuahnya ke baju ku!!",
+        text: "Kenapa {name} bisa jatuh chloe?",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "Sean maaf, aku kaget kuahnya sangat panas.",
+        text: "Gatau Sean" "Lagian {name} belum minum banyak tadi",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Sean",
-        text: "iya sekarang kulit gue juga panas melepuh chloe!",
+        text: "Mungkin {name} kelelahan",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "maaf sean..",
+        text: "Iya, {name} emang sering maksain diri",
       },
       {
         type: "image",
@@ -152,13 +152,13 @@ export const logic = {
         type: "dialogue",
         retainMedia: true,
         name: "Sean",
-        text: "ayo masukan sundubu yang lain ke mangkuk chloe.",
+        text: "Apa gara-gara kemarin {name} nonstop bantu gue di gudang ya?",
       },
       {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "sebentar, biar aku cuci piring bekas makan kamu dulu.",
+        text: "Kamu harusnya bisa nahan dia Sean",
       },
     ];
   },
@@ -203,7 +203,7 @@ export const logic = {
         type: "dialogue",
         retainMedia: true,
         name: "Sean",
-        text: "lo tiba-tiba tumbang di dance floor. kayanya lo kecapean {name}.",
+        text: "Tadi tiba-tiba lo jatuh {name}" "Kayanya lo kecapean",
       },
       {
         type: "image",
@@ -216,7 +216,7 @@ export const logic = {
         type: "dialogue",
         retainMedia: true,
         name: "Chloe",
-        text: "kamu harusnya jangan berlebihan {name}! kamu harus tau batasan energi kamu sampai mana!",
+        text: "Kamu harusnya jangan berlebihan {name}!" "Kamu harus tau batasan energi kamu sampai mana!",
       },
       { bg: "black", effect: "cross-dissolve", skippable: false, wait: 1000 },
     ];
@@ -234,7 +234,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Chloe",
-          text: "tapi syukur itu bukan sesuatu yang parah.",
+          text: "Kayanya kamu harus istirahat dulu {player}",
         },
         {
           type: "image",
@@ -247,7 +247,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Chloe",
-          text: "sory {name}, kayanya aku harus buru-buru cabut.",
+          text: "Guys sorry, Aku harus buru-buru cabut ya.",
         },
         {
           type: "image",
@@ -260,7 +260,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Chloe",
-          text: "bye {name}!",
+          text: "Bye {name}!",
         },
       );
     } else {
@@ -276,7 +276,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Sean",
-          text: "tapi syukur itu bukan sesuatu yang parah.",
+          text: "Lo harus istirahat dulu {player}",
         },
         {
           type: "image",
@@ -289,7 +289,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Sean",
-          text: "sory {name}, kayanya gue harus buru-buru cabut.",
+          text: "Sorry guys" "kayanya gue harus buru-buru cabut",
         },
         {
           type: "image",
@@ -302,7 +302,7 @@ export const logic = {
           type: "dialogue",
           retainMedia: true,
           name: "Sean",
-          text: "bye {name}!",
+          text: "Bye {name}!",
         },
       );
     }
@@ -551,8 +551,8 @@ export const logic = {
     await sleep(3000);
     dialogueEl.classList.add("opacity-0");
 
-    // Animasi bar energi turun di pertengahan intro video (Selama 4 detik)
-    GAME.logic.animateStat("energy", 30, 0, 4000);
+    // Animasi bar energi turun di pertengahan intro video (Selama 7 detik)
+    GAME.logic.animateStat("energy", 30, 0, 7000);
 
     await sleep(500);
     await typeText(
